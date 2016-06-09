@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  FeedVC.swift
 //  Lunch Note
 //
 //  Created by James Dyer on 6/8/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class FeedVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
