@@ -6,4 +6,7 @@
 //  Copyright © 2016 James Dyer. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+let lightGreyColor = UIColor(red: 195 / 255, green: 195 / 255, blue: 195 / 255, alpha: 1.0)
+let lightRedColor = UIColor(red: 255 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1.0)
