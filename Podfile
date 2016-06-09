@@ -5,4 +5,6 @@ use_frameworks!
 
 target 'Lunch Note' do
   pod 'Firebase'
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage'
 end
