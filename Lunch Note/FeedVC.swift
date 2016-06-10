@@ -19,11 +19,15 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         
-        FirebaseClient.Constants.Database.REF_NOTES.observeEventType(FIRDataEventType.Value, withBlock: { (snapshot) in
-            print(snapshot)
-        })
+        
         
         setView()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        performSegueWithIdentifier("showLogin", sender: nil)
     }
     
     func setView() {
@@ -92,6 +96,11 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func postButtonPressed() {
         
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        //For iPads
+        cell.backgroundColor = UIColor.clearColor()
     }
 
 

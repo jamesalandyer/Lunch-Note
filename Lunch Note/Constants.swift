@@ -10,3 +10,12 @@ import UIKit
 
 let lightGreyColor = UIColor(red: 195 / 255, green: 195 / 255, blue: 195 / 255, alpha: 1.0)
 let lightRedColor = UIColor(red: 255 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1.0)
+
+let EMPTY = "EMPTY"
+
+//Switchs to the main queue to update UI
+func performUIUpdatesOnMain(updates: () -> Void) {
+    dispatch_async(dispatch_get_main_queue()) {
+        updates()
+    }
+}

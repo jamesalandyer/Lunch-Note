@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "topcircle copy.png",
+      "filename" : "topcircle.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "topcircle copy@2x.png",
+      "filename" : "topcircle@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "topcircle copy@3x.png",
+      "filename" : "topcircle@3x.png",
       "scale" : "3x"
     }
   ],
