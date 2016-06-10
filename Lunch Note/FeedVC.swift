@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 import FirebaseDatabase
 
 class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -19,7 +20,14 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         
-        
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if let user = user {
+                // User is signed in.
+                print("HERE \(user)")
+            } else {
+                print("NO USER")
+            }
+        }
         
         setView()
     }
@@ -27,6 +35,31 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        if let user = FIRAuth.auth()?.currentUser {
+            for profile in user.providerData {
+                let providerID = profile.providerID
+                let uid = profile.uid
+                let name = profile.displayName
+                let email = profile.email
+                let photoURL = profile.photoURL
+                
+                print("USERTEST", name, email, photoURL, uid, providerID)
+            }
+        } else {
+            // No user is signed in.
+        }
+        
+        if let user = FIRAuth.auth()?.currentUser {
+            let name = user.displayName
+            let email = user.email
+            let photoUrl = user.photoURL
+            let uid = user.uid
+            
+            print("USEEER", name, email, photoUrl, uid)
+        } else {
+            // No user is signed in.
+            print("NO")
+        }
         performSegueWithIdentifier("showLogin", sender: nil)
     }
     

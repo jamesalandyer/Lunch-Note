@@ -16,17 +16,34 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var submitButton: CustomButton!
     @IBOutlet weak var forgotButton: CustomButton!
     @IBOutlet weak var logoImageView: UIImageView!
+    @IBOutlet weak var loginStackView: UIStackView!
+    @IBOutlet weak var onBoardStackView: UIStackView!
+    @IBOutlet weak var displayNameStackView: UIStackView!
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var nameButton: CustomButton!
     
     let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     private var userEmail: String!
     private var userPassword: String!
+    private var displayNameLength = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         emailTextField.delegate = self
         passwordTextField.delegate = self
+        nameTextField.delegate = self
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        subscribeToKeyboardNotifications()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
     }
 
     @IBAction func submitButtonPressed(sender: AnyObject) {
@@ -68,17 +85,12 @@ class LoginVC: UIViewController, UITextFieldDelegate {
             } else {
                 performUIUpdatesOnMain {
                     if let userInfo = user {
-                        DataService.sharedInstance.uid = userInfo.uid
-                        if let photoURL = userInfo.photoURL {
-                            DataService.sharedInstance.setPhotoURL(photoURL)
-                        }
-                        if let displayName = userInfo.displayName {
-                            DataService.sharedInstance.displayName = displayName
+                        if userInfo.displayName != nil {
                             self.dismissViewControllerAnimated(true, completion: nil)
                         } else {
-                            //HIDE FOR ONBOARD
+                            self.showOnBoardScreen(true)
+                            self.setUI(true)
                         }
-
                     } else {
                         self.showErrorAlert("Unable To Retrieve Data", msg: "Please try logging in again.", createUser: false)
                     }
@@ -123,6 +135,35 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         })
     }
     
+    @IBAction func nameButtonPressed(sender: AnyObject) {
+        setUI(false)
+        
+        guard let displayName = nameTextField.text where displayName != "" else {
+            showErrorAlert("Invalid Display Name", msg: "Please enter a display name.", createUser: false)
+            return
+        }
+        
+        let user = FIRAuth.auth()?.currentUser
+        if let user = user {
+            let changeRequest = user.profileChangeRequest()
+            
+            changeRequest.displayName = displayName.uppercaseString
+            changeRequest.photoURL = NSURL(string: DEFAULT_PICTURE)
+            
+            changeRequest.commitChangesWithCompletion({ error in
+                performUIUpdatesOnMain {
+                    if error != nil {
+                        self.showErrorAlert("Unable To Save Display Name", msg: "Please try again.", createUser: false)
+                    } else {
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                }
+            })
+        } else {
+            showErrorAlert("Unable To Save Display Name", msg: "Please try again.", createUser: false)
+        }
+    }
+    
     private func isValidEmail(testStr:String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
@@ -150,10 +191,14 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     }
     
     private func setUI(enable: Bool) {
+        dismissKeyboard()
+        
         emailTextField.enabled = enable
         passwordTextField.enabled = enable
         submitButton.enabled = enable
         forgotButton.enabled = enable
+        nameTextField.enabled = enable
+        nameButton.enabled = enable
         
         let alpha: CGFloat = enable ? 1.0 : 0.5
         
@@ -162,6 +207,8 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         submitButton.alpha = alpha
         forgotButton.alpha = alpha
         logoImageView.alpha = alpha
+        onBoardStackView.alpha = alpha
+        displayNameStackView.alpha = alpha
         
         loadingIndicator.frame = CGRectMake(0, 0, 40, 40)
         loadingIndicator.center = view.center
@@ -170,14 +217,77 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         enable ? loadingIndicator.removeFromSuperview() : view.addSubview(loadingIndicator)
     }
     
+    private func showOnBoardScreen(show: Bool) {
+        loginStackView.hidden = show
+        forgotButton.hidden = show
+        
+        onBoardStackView.hidden = !show
+        displayNameStackView.hidden = !show
+    }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if textField == nameTextField {
+            
+            if range.length == 1 {
+                displayNameLength = displayNameLength - 1
+                return true
+            }
+            
+            if displayNameLength < 12 {
+                if string == " " {
+                    return false
+                } else {
+                    displayNameLength = displayNameLength + 1
+                    return true
+                }
+            } else {
+                return false
+            }
+            
+        }
+        
+        return true
+    }
+    
+    private func subscribeToKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    private func unsubscribeFromKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        if nameTextField.editing {
+            logoImageView.hidden = true
+            view.frame.origin.y = getKeyboardHeight(notification) * -1
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        if nameTextField.editing {
+            logoImageView.hidden = false
+            view.frame.origin.y = 0
+        }
+    }
+    
+    private func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        return keyboardSize.CGRectValue().height
+    }
+    
     private func dismissKeyboard() {
         emailTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
+        nameTextField.resignFirstResponder()
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -188,11 +298,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         FIRAuth.auth()?.createUserWithEmail(userEmail, password: userPassword, completion: { (user, error) in
             performUIUpdatesOnMain {
                 if error != nil {
-                    self.showErrorAlert("Couldn't Create User", msg: "Please try again.", createUser: false)
+                    self.showErrorAlert("Couldn't Create User", msg: "Please make sure your password is 6 or more characters and try again.", createUser: false)
                 } else {
-                    if let userInfo = user {
-                        DataService.sharedInstance.uid = userInfo.uid
-                        //HIDE FOR ONBOARD
+                    if user != nil {
+                        self.showOnBoardScreen(true)
+                        self.setUI(true)
                     } else {
                         self.showErrorAlert("Unable To Retrieve Data", msg: "Please try again.", createUser: false)
                     }

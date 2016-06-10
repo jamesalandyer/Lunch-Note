@@ -12,7 +12,6 @@
 		2B584B951D08E662009EB16B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B584B931D08E662009EB16B /* Main.storyboard */; };
 		2B584B971D08E662009EB16B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B584B961D08E662009EB16B /* Assets.xcassets */; };
 		2B584B9A1D08E662009EB16B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B584B981D08E662009EB16B /* LaunchScreen.storyboard */; };
-		2B584BA81D08E8F9009EB16B /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BA71D08E8F9009EB16B /* DataService.swift */; };
 		2B584BAA1D08E98B009EB16B /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BA91D08E98B009EB16B /* Note.swift */; };
 		2B584BAC1D08EA59009EB16B /* NoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BAB1D08EA59009EB16B /* NoteCell.swift */; };
 		2B584BAE1D08EA75009EB16B /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BAD1D08EA75009EB16B /* ProfileCell.swift */; };
@@ -46,7 +45,6 @@
 		2B584B961D08E662009EB16B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2B584B991D08E662009EB16B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2B584B9B1D08E662009EB16B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2B584BA71D08E8F9009EB16B /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		2B584BA91D08E98B009EB16B /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		2B584BAB1D08EA59009EB16B /* NoteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteCell.swift; sourceTree = "<group>"; };
 		2B584BAD1D08EA75009EB16B /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
@@ -105,7 +103,6 @@
 		2B584B8E1D08E661009EB16B /* Lunch Note */ = {
 			isa = PBXGroup;
 			children = (
-				2B584BA11D08E844009EB16B /* Services */,
 				2B584BA21D08E855009EB16B /* Model */,
 				2B584BA31D08E85F009EB16B /* View */,
 				2B584BA41D08E863009EB16B /* Controller */,
@@ -113,14 +110,6 @@
 				2B584BA61D08E874009EB16B /* Supporting Files */,
 			);
 			path = "Lunch Note";
-			sourceTree = "<group>";
-		};
-		2B584BA11D08E844009EB16B /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				2B584BA71D08E8F9009EB16B /* DataService.swift */,
-			);
-			name = Services;
 			sourceTree = "<group>";
 		};
 		2B584BA21D08E855009EB16B /* Model */ = {
@@ -336,7 +325,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B584BA81D08E8F9009EB16B /* DataService.swift in Sources */,
 				2B584BC41D08ED92009EB16B /* PostVC.swift in Sources */,
 				2B584BAC1D08EA59009EB16B /* NoteCell.swift in Sources */,
 				2B584BB41D08EB6A009EB16B /* CustomTextView.swift in Sources */,

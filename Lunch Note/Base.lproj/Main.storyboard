@@ -13,6 +13,13 @@
             <string>Roboto-Bold</string>
             <string>Roboto-Bold</string>
             <string>Roboto-Bold</string>
+            <string>Roboto-Bold</string>
+            <string>Roboto-Bold</string>
+            <string>Roboto-Bold</string>
+            <string>Roboto-Bold</string>
+        </mutableArray>
+        <mutableArray key="Roboto-Regular.ttf">
+            <string>Roboto-Regular</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -95,7 +102,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7tW-2j-sP4" customClass="CustomButton" customModule="Lunch_Note" customModuleProvider="target">
-                                        <rect key="frame" x="170" y="118" width="221" height="65"/>
+                                        <rect key="frame" x="169" y="118" width="221" height="65"/>
                                         <color key="backgroundColor" red="0.50980392159999999" green="1" blue="0.57647058819999997" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="221" id="a3k-se-BRI"/>
@@ -126,31 +133,168 @@
                                         <exclude reference="yfN-IJ-0lI"/>
                                     </mask>
                                 </variation>
-                                <variation key="heightClass=compact" axis="horizontal" distribution="fillProportionally">
+                                <variation key="heightClass=compact">
                                     <mask key="constraints">
                                         <exclude reference="sss-d6-ZRB"/>
                                         <include reference="yfN-IJ-0lI"/>
                                     </mask>
                                 </variation>
                             </stackView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="w5N-MH-tLn">
+                                <rect key="frame" x="20" y="214.5" width="560" height="171"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WELCOME TO LUNCHNOTE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="pR6-sd-OjW">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="TQi-7X-Qb0"/>
+                                            <constraint firstAttribute="height" constant="30" id="Umg-Ew-515"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="25"/>
+                                        <color key="textColor" red="1" green="0.50980392156862742" blue="0.50980392156862742" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="TQi-7X-Qb0"/>
+                                            </mask>
+                                        </variation>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="A place to inspire other people. Simply add your words of wisdom to the feed!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="97A-A2-PWm">
+                                        <rect key="frame" x="0.0" y="50" width="560" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="TtH-0D-QA7"/>
+                                            <constraint firstAttribute="height" constant="80" id="bje-71-SLH"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="21"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="bje-71-SLH"/>
+                                            </mask>
+                                        </variation>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="0fc-JJ-Whq">
+                                        <rect key="frame" x="0.0" y="120" width="560" height="51"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" text="Simply click this button to save a note to your lunchbox" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="B1C-3u-x2C">
+                                                <rect key="frame" x="0.0" y="0.0" width="560" height="16"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="16" id="Fim-32-cJz"/>
+                                                    <constraint firstAttribute="height" constant="29" id="ee5-Xc-whF"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="14"/>
+                                                <color key="textColor" red="0.50980392159999999" green="1" blue="0.57647058819999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="ee5-Xc-whF"/>
+                                                    </mask>
+                                                </variation>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lunchbox_add" translatesAutoresizingMaskIntoConstraints="NO" id="80A-aY-jvV">
+                                                <rect key="frame" x="266" y="24" width="28" height="27"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="27" id="HaA-AA-2OQ"/>
+                                                    <constraint firstAttribute="width" constant="28" id="SZ0-Cb-REn"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="B1C-3u-x2C" secondAttribute="trailing" id="Clm-dE-QVM"/>
+                                            <constraint firstItem="B1C-3u-x2C" firstAttribute="leading" secondItem="0fc-JJ-Whq" secondAttribute="leading" id="Ob3-ti-hLO"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="pR6-sd-OjW" firstAttribute="leading" secondItem="w5N-MH-tLn" secondAttribute="leading" id="7CO-26-kHb"/>
+                                    <constraint firstItem="0fc-JJ-Whq" firstAttribute="leading" secondItem="w5N-MH-tLn" secondAttribute="leading" id="BmO-Oa-yaN"/>
+                                    <constraint firstAttribute="height" constant="183" id="KmA-G1-pyK"/>
+                                    <constraint firstAttribute="trailing" secondItem="0fc-JJ-Whq" secondAttribute="trailing" id="ZAf-3Q-N6w"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="97A-A2-PWm" secondAttribute="trailing" id="Zb9-7v-wbM"/>
+                                    <constraint firstAttribute="height" constant="171" id="bg1-Ia-YxC"/>
+                                    <constraint firstItem="97A-A2-PWm" firstAttribute="leading" secondItem="w5N-MH-tLn" secondAttribute="leadingMargin" id="bsv-A2-pry"/>
+                                    <constraint firstAttribute="height" constant="147" id="iJU-37-cYY"/>
+                                    <constraint firstAttribute="trailing" secondItem="pR6-sd-OjW" secondAttribute="trailing" id="xAz-WP-C87"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="KmA-G1-pyK"/>
+                                        <exclude reference="iJU-37-cYY"/>
+                                    </mask>
+                                </variation>
+                            </stackView>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="K1F-J0-4wS">
+                                <rect key="frame" x="20" y="482" width="560" height="98"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="DISPLAY NAME" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="slc-M6-Cb7">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="45" id="lKJ-iK-KPb"/>
+                                        </constraints>
+                                        <color key="textColor" red="0.25098039220000001" green="0.25098039220000001" blue="0.25098039220000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="23"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I7h-gD-Psq" customClass="CustomButton" customModule="Lunch_Note" customModuleProvider="target">
+                                        <rect key="frame" x="192" y="53" width="175" height="45"/>
+                                        <color key="backgroundColor" red="1" green="0.94117647059999998" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="45" id="ESe-wb-kNP"/>
+                                            <constraint firstAttribute="height" constant="65" id="Gmu-c7-Age"/>
+                                            <constraint firstAttribute="width" constant="175" id="WBH-8a-7Bz"/>
+                                            <constraint firstAttribute="width" constant="221" id="XcT-4z-vuX"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="22"/>
+                                        <state key="normal" title="SUBMIT">
+                                            <color key="titleColor" red="0.25098039220000001" green="0.25098039220000001" blue="0.25098039220000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="Gmu-c7-Age"/>
+                                                <exclude reference="XcT-4z-vuX"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <action selector="nameButtonPressed:" destination="Zbd-mM-Xgy" eventType="touchUpInside" id="nn5-Pf-WDK"/>
+                                            <action selector="submitButtonPressed:" destination="Zbd-mM-Xgy" eventType="touchUpInside" id="Y8N-wa-Sud"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="slc-M6-Cb7" firstAttribute="leading" secondItem="K1F-J0-4wS" secondAttribute="leading" id="7CU-vH-kin"/>
+                                    <constraint firstAttribute="height" constant="98" id="Fbl-r5-hFa"/>
+                                    <constraint firstAttribute="trailing" secondItem="slc-M6-Cb7" secondAttribute="trailing" id="XNK-d8-iFv"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.25098039220000001" green="0.25098039220000001" blue="0.25098039220000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="w5N-MH-tLn" firstAttribute="leading" secondItem="vbY-2H-mS7" secondAttribute="leadingMargin" id="50f-Yk-N89"/>
                             <constraint firstItem="A9W-Mu-zj1" firstAttribute="leading" secondItem="vbY-2H-mS7" secondAttribute="leadingMargin" id="BQH-yc-KCt"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="w5N-MH-tLn" secondAttribute="trailing" id="DJV-Il-fMR"/>
                             <constraint firstItem="CMr-0U-XFr" firstAttribute="top" secondItem="Rik-kt-mCi" secondAttribute="bottom" constant="20" id="KqU-zn-6Ji"/>
                             <constraint firstItem="Rik-kt-mCi" firstAttribute="centerX" secondItem="vbY-2H-mS7" secondAttribute="centerX" id="M3R-EE-exu"/>
+                            <constraint firstItem="K1F-J0-4wS" firstAttribute="leading" secondItem="vbY-2H-mS7" secondAttribute="leadingMargin" id="Y6z-7w-fgZ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="A9W-Mu-zj1" secondAttribute="trailing" id="bzC-2v-Iiq"/>
+                            <constraint firstItem="w5N-MH-tLn" firstAttribute="centerY" secondItem="vbY-2H-mS7" secondAttribute="centerY" id="h4m-s1-aNN"/>
                             <constraint firstItem="A9W-Mu-zj1" firstAttribute="centerY" secondItem="vbY-2H-mS7" secondAttribute="centerY" id="mgn-kk-ygc"/>
                             <constraint firstItem="TSu-PC-UK3" firstAttribute="centerX" secondItem="vbY-2H-mS7" secondAttribute="centerX" id="mr0-3B-nEE"/>
+                            <constraint firstItem="CMr-0U-XFr" firstAttribute="top" secondItem="K1F-J0-4wS" secondAttribute="bottom" constant="20" id="pmM-YC-rh7"/>
                             <constraint firstItem="TSu-PC-UK3" firstAttribute="top" secondItem="26r-wY-JhH" secondAttribute="bottom" constant="16" id="rGz-ve-yVG">
                                 <variation key="heightClass=compact" constant="8"/>
                             </constraint>
+                            <constraint firstAttribute="trailingMargin" secondItem="K1F-J0-4wS" secondAttribute="trailing" id="zhc-Yz-pHv"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="displayNameStackView" destination="K1F-J0-4wS" id="Uav-WE-iwX"/>
                         <outlet property="emailTextField" destination="R0Q-x1-y0L" id="Oja-96-hc4"/>
                         <outlet property="forgotButton" destination="Rik-kt-mCi" id="4Xn-sj-2KN"/>
+                        <outlet property="loginStackView" destination="A9W-Mu-zj1" id="r7F-0F-vnY"/>
                         <outlet property="logoImageView" destination="TSu-PC-UK3" id="PuJ-Kr-Jas"/>
+                        <outlet property="nameButton" destination="I7h-gD-Psq" id="5ix-oj-rh6"/>
+                        <outlet property="nameTextField" destination="slc-M6-Cb7" id="8kC-uI-3xa"/>
+                        <outlet property="onBoardStackView" destination="w5N-MH-tLn" id="P5V-3H-5o0"/>
                         <outlet property="passwordTextField" destination="gqp-D1-K0R" id="K6d-U1-WwQ"/>
                         <outlet property="submitButton" destination="7tW-2j-sP4" id="F5s-k6-TNW"/>
                     </connections>
