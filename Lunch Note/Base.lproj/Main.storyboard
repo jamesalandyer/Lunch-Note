@@ -386,7 +386,7 @@
                                                                                 <constraint firstAttribute="height" constant="5" id="mcd-1m-xRZ"/>
                                                                             </constraints>
                                                                         </view>
-                                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="defaultpicture" translatesAutoresizingMaskIntoConstraints="NO" id="98j-AK-zPu">
+                                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="defaultpicture" translatesAutoresizingMaskIntoConstraints="NO" id="98j-AK-zPu" customClass="CustomImageView" customModule="Lunch_Note" customModuleProvider="target">
                                                                             <rect key="frame" x="25" y="0.0" width="40" height="40"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="40" id="6f5-kF-Cq0"/>
@@ -467,6 +467,12 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <outlet property="dateLabel" destination="8JE-Qh-Air" id="qIu-Tr-DAg"/>
+                                            <outlet property="lunchBoxButton" destination="cEx-bj-tDr" id="ekV-WG-uMc"/>
+                                            <outlet property="noteLabel" destination="U0K-p1-Pjb" id="GrR-j8-eCV"/>
+                                            <outlet property="profileButton" destination="98j-AK-zPu" id="miO-oj-4Rp"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>

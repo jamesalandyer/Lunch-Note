@@ -10,9 +10,12 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 
-class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellAuthorDelegate, NoteCellDeleteDelegate {
     
     @IBOutlet weak var tableView: UITableView!
+    
+    var notes = [Note]()
+    var authorDetail: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,47 +23,19 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if let user = user {
-                // User is signed in.
-                print("HERE \(user)")
-            } else {
-                print("NO USER")
-            }
-        }
-        
         setView()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let user = FIRAuth.auth()?.currentUser {
-            for profile in user.providerData {
-                let providerID = profile.providerID
-                let uid = profile.uid
-                let name = profile.displayName
-                let email = profile.email
-                let photoURL = profile.photoURL
-                
-                print("USERTEST", name, email, photoURL, uid, providerID)
+        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
+            if user != nil {
+                self.loadNotes()
+            } else {
+                self.performSegueWithIdentifier("showLogin", sender: nil)
             }
-        } else {
-            // No user is signed in.
         }
-        
-        if let user = FIRAuth.auth()?.currentUser {
-            let name = user.displayName
-            let email = user.email
-            let photoUrl = user.photoURL
-            let uid = user.uid
-            
-            print("USEEER", name, email, photoUrl, uid)
-        } else {
-            // No user is signed in.
-            print("NO")
-        }
-        performSegueWithIdentifier("showLogin", sender: nil)
     }
     
     func setView() {
@@ -104,7 +79,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return notes.count
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -117,9 +92,14 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        //let post = posts[indexPath.row]
+        let note = notes[indexPath.row]
         
         if let cell = tableView.dequeueReusableCellWithIdentifier("NoteCell") as? NoteCell {
+            
+            cell.authorDelegate = self
+            cell.deleteDelegate = self
+            
+            cell.configureCell(note)
             
             return cell
         } else {
@@ -128,14 +108,65 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func postButtonPressed() {
-        
+        performSegueWithIdentifier("showPost", sender: nil)
     }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         //For iPads
         cell.backgroundColor = UIColor.clearColor()
     }
-
+    
+    private func loadNotes() {
+        let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        loadingIndicator.frame = CGRectMake(0, 0, 40, 40)
+        loadingIndicator.center = view.center
+        loadingIndicator.startAnimating()
+        
+        view.addSubview(loadingIndicator)
+        
+        FirebaseClient.Constants.Database.REF_NOTES.observeEventType(.Value, withBlock: { snapshot in
+            self.notes = []
+            
+            if let notes = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                for note in notes {
+                    if let noteDict = note.value as? Dictionary<String, AnyObject> {
+                        let key = note.key
+                        let note = Note(noteKey: key, dictionary: noteDict)
+                        self.notes.insert(note, atIndex: 0)
+                    }
+                }
+            }
+            self.tableView.reloadData()
+            loadingIndicator.removeFromSuperview()
+        })
+    }
+    
+    func showDeleteAlert(note: FIRDatabaseReference) {
+        let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+            note.removeValue()
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        deleteController.addAction(deleteAction)
+        deleteController.addAction(cancelAction)
+        
+        presentViewController(deleteController, animated: true, completion: nil)
+    }
+    
+    func showAuthorDetail(author: String) {
+        authorDetail = author
+        performSegueWithIdentifier("showFeedDetail", sender: nil)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showFeedDetail" {
+            if let controller = segue.destinationViewController as? DetailVC {
+                controller.detailForUser = authorDetail
+            }
+        }
+    }
 
 }
 

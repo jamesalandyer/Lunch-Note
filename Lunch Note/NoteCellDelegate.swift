@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import FirebaseDatabase
 
 protocol NoteCellAuthorDelegate {
-    
+    func showAuthorDetail(author: String)
 }
 
 protocol NoteCellDeleteDelegate {
-    
+    func showDeleteAlert(note: FIRDatabaseReference)
 }

@@ -12,6 +12,7 @@ class CustomImageView: UIImageView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        layer.cornerRadius = layer.frame.size.width / 2
     }
 
 }

@@ -10,6 +10,8 @@ import UIKit
 
 class DetailVC: UIViewController {
 
+    var detailForUser: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
