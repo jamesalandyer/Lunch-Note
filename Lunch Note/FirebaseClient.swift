@@ -15,10 +15,32 @@ class FirebaseClient {
     
     var downloadTask: FIRStorageDownloadTask!
     
-    var currentUser: String {
+    var userReference: FIRDatabaseReference {
+        return FirebaseClient.Constants.Database.REF_USERS.child(FirebaseClient.sharedInstance.currentUser!)
+    }
+    var lunchBoxReference: FIRDatabaseReference {
+        return userReference.child("lunchbox")
+    }
+    var notesReference: FIRDatabaseReference {
+        return userReference.child("notes")
+    }
+    
+    var currentUser: String? {
         let user = FIRAuth.auth()?.currentUser
         let uid = user?.uid
-        return uid!
+        return uid
+    }
+    
+    var currentDisplayName: String? {
+        let user = FIRAuth.auth()?.currentUser
+        let displayName = user?.displayName
+        return displayName
+    }
+    
+    var currentUserImage: String {
+        let user = FIRAuth.auth()?.currentUser
+        let currentImage = user?.photoURL?.absoluteString
+        return currentImage!
     }
     
     func downloadImage(author: String, url: FIRStorageReference, completionHandler: (result: UIImage?) -> Void) {

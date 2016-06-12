@@ -10,7 +10,7 @@ import Foundation
 import FirebaseDatabase
 
 protocol NoteCellAuthorDelegate {
-    func showAuthorDetail(author: String)
+    func showAuthorDetail(author: String, image: String)
 }
 
 protocol NoteCellDeleteDelegate {

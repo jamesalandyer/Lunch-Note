@@ -11,21 +11,24 @@ import Firebase
 
 class NoteCell: UITableViewCell {
 
-    @IBOutlet weak var noteLabel: UILabel!
-    @IBOutlet weak var lunchBoxButton: UIImageView!
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var profileButton: CustomImageView!
+    @IBOutlet weak private var noteLabel: UILabel!
+    @IBOutlet weak private var lunchBoxButton: UIImageView!
+    @IBOutlet weak private var dateLabel: UILabel!
+    @IBOutlet weak private var profileButton: CustomImageView!
     
-    private let user = FirebaseClient.sharedInstance.currentUser
+    private var user: String {
+        return FirebaseClient.sharedInstance.currentUser!
+    }
+    
     private var currentNote: Note!
     
     var authorDelegate: NoteCellAuthorDelegate!
     var deleteDelegate: NoteCellDeleteDelegate!
     
-    var lunchBoxGesture: UITapGestureRecognizer!
-    var profileGesture: UITapGestureRecognizer!
+    private var lunchBoxGesture: UITapGestureRecognizer!
+    private var profileGesture: UITapGestureRecognizer!
     
-    var lunchboxNote: FIRDatabaseReference!
+    private var lunchboxNote: FIRDatabaseReference!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -40,19 +43,17 @@ class NoteCell: UITableViewCell {
     
     func configureCell(note: Note) {
         currentNote = note
-        lunchboxNote = FirebaseClient.Constants.Database.User.LUNCHBOX.child(currentNote.noteKey)
+        lunchboxNote = FirebaseClient.sharedInstance.lunchBoxReference.child(currentNote.noteKey)
         
         profileButton.image = UIImage(named: "defaultpicture.png")
         
         if currentNote.noteAuthorImage != DEFAULT_PICTURE {
             if let cachedImage = FirebaseClient.Constants.LocalImages.imageCache.objectForKey(note.noteAuthor) as? UIImage {
-                print("HAD IT")
                 self.profileButton.image = cachedImage
             } else {
                 let imageReference = FIRStorage.storage().referenceForURL(currentNote.noteAuthorImage)
                 FirebaseClient.sharedInstance.downloadImage(currentNote.noteAuthor, url: imageReference, completionHandler: { (result) in
                     if let image = result {
-                        print("GOT IT")
                         self.profileButton.image = image
                     }
                 })
@@ -117,7 +118,7 @@ class NoteCell: UITableViewCell {
     
     func profileTapped(sender: UITapGestureRecognizer) {
         if let delegate = authorDelegate {
-            delegate.showAuthorDetail(currentNote.noteAuthor)
+            delegate.showAuthorDetail(currentNote.noteAuthor, image: currentNote.noteAuthorImage)
         }
     }
 

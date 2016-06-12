@@ -11,22 +11,21 @@ import FirebaseAuth
 
 class LoginVC: UIViewController, UITextFieldDelegate {
 
-    @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var submitButton: CustomButton!
-    @IBOutlet weak var forgotButton: CustomButton!
-    @IBOutlet weak var logoImageView: UIImageView!
-    @IBOutlet weak var loginStackView: UIStackView!
-    @IBOutlet weak var onBoardStackView: UIStackView!
-    @IBOutlet weak var displayNameStackView: UIStackView!
-    @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var nameButton: CustomButton!
+    @IBOutlet weak private var emailTextField: UITextField!
+    @IBOutlet weak private var passwordTextField: UITextField!
+    @IBOutlet weak private var submitButton: CustomButton!
+    @IBOutlet weak private var forgotButton: CustomButton!
+    @IBOutlet weak private var logoImageView: UIImageView!
+    @IBOutlet weak private var loginStackView: UIStackView!
+    @IBOutlet weak private var onBoardStackView: UIStackView!
+    @IBOutlet weak private var displayNameStackView: UIStackView!
+    @IBOutlet weak private var nameTextField: UITextField!
+    @IBOutlet weak private var nameButton: CustomButton!
     
-    let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+    private let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     private var userEmail: String!
     private var userPassword: String!
-    private var displayNameLength = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +38,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         subscribeToKeyboardNotifications()
+        if FirebaseClient.sharedInstance.currentUser != nil {
+            if FirebaseClient.sharedInstance.currentDisplayName == nil {
+                showOnBoardScreen(true)
+            }
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -155,6 +159,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
                     if error != nil {
                         self.showErrorAlert("Unable To Save Display Name", msg: "Please try again.", createUser: false)
                     } else {
+                        FirebaseClient.sharedInstance.userReference.child("displayName").setValue(displayName.uppercaseString)
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
                 }
@@ -234,15 +239,13 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         if textField == nameTextField {
             
             if range.length == 1 {
-                displayNameLength = displayNameLength - 1
                 return true
             }
             
-            if displayNameLength < 12 {
+            if textField.text?.characters.count < 12 {
                 if string == " " {
                     return false
                 } else {
-                    displayNameLength = displayNameLength + 1
                     return true
                 }
             } else {

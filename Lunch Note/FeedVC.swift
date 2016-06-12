@@ -13,9 +13,12 @@ import FirebaseDatabase
 class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellAuthorDelegate, NoteCellDeleteDelegate {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var notes = [Note]()
+    var notesLoaded = false
     var authorDetail: String!
+    var userImage: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +34,11 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         
         FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
             if user != nil {
-                self.loadNotes()
+                if FirebaseClient.sharedInstance.currentDisplayName != nil {
+                    self.loadNotes()
+                } else {
+                    self.performSegueWithIdentifier("showLogin", sender: nil)
+                }
             } else {
                 self.performSegueWithIdentifier("showLogin", sender: nil)
             }
@@ -61,7 +68,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         rightBarButton.customView = postButton
         //Sets Logout Button In Navigation
         self.navigationItem.rightBarButtonItem = rightBarButton
-        let leftBarButton = UIBarButtonItem(title: "Logout", style: .Done, target: self, action: #selector(postButtonPressed))
+        let leftBarButton = UIBarButtonItem(title: "Logout", style: .Done, target: self, action: #selector(logoutButtonPressed))
         leftBarButton.tintColor = lightRedColor
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
@@ -111,34 +118,67 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         performSegueWithIdentifier("showPost", sender: nil)
     }
     
+    func logoutButtonPressed() {
+        let action = UIAlertController(title: "Logging Out", message: "Are you sure that you want to log out?", preferredStyle: .Alert)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let logout = UIAlertAction(title: "Logout", style: .Destructive) { (logout) in
+            self.logout()
+        }
+        
+        action.addAction(cancel)
+        action.addAction(logout)
+        
+        presentViewController(action, animated: true, completion: nil)
+    }
+    
+    private func logout() {
+        do {
+            try FIRAuth.auth()!.signOut()
+            notesLoaded = false
+            notes = []
+            FirebaseClient.Constants.Database.REF_NOTES.removeAllObservers()
+            tableView.reloadData()
+            performSegueWithIdentifier("showLogin", sender: nil)
+        } catch {
+            showAlert("Unable To Logout", msg: "Please try logging out again.")
+        }
+    }
+    
+    private func showAlert(title: String, msg: String) {
+        let action = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
+        let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+        
+        action.addAction(ok)
+        presentViewController(action, animated: true, completion: nil)
+    }
+    
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         //For iPads
         cell.backgroundColor = UIColor.clearColor()
     }
     
     private func loadNotes() {
-        let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-        loadingIndicator.frame = CGRectMake(0, 0, 40, 40)
-        loadingIndicator.center = view.center
-        loadingIndicator.startAnimating()
-        
-        view.addSubview(loadingIndicator)
-        
-        FirebaseClient.Constants.Database.REF_NOTES.observeEventType(.Value, withBlock: { snapshot in
-            self.notes = []
+        if !notesLoaded {
+            activityIndicator.hidden = false
+            activityIndicator.startAnimating()
             
-            if let notes = snapshot.children.allObjects as? [FIRDataSnapshot] {
-                for note in notes {
-                    if let noteDict = note.value as? Dictionary<String, AnyObject> {
-                        let key = note.key
-                        let note = Note(noteKey: key, dictionary: noteDict)
-                        self.notes.insert(note, atIndex: 0)
+            FirebaseClient.Constants.Database.REF_NOTES.observeEventType(.Value, withBlock: { snapshot in
+                self.notes = []
+                
+                if let notes = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                    for note in notes {
+                        if let noteDict = note.value as? Dictionary<String, AnyObject> {
+                            let key = note.key
+                            let note = Note(noteKey: key, dictionary: noteDict)
+                            self.notes.insert(note, atIndex: 0)
+                        }
+                        self.tableView.reloadData()
                     }
                 }
-            }
-            self.tableView.reloadData()
-            loadingIndicator.removeFromSuperview()
-        })
+                self.activityIndicator.hidden = true
+                self.notesLoaded = true
+            })
+        }
     }
     
     func showDeleteAlert(note: FIRDatabaseReference) {
@@ -155,8 +195,9 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         presentViewController(deleteController, animated: true, completion: nil)
     }
     
-    func showAuthorDetail(author: String) {
+    func showAuthorDetail(author: String, image: String) {
         authorDetail = author
+        userImage = image
         performSegueWithIdentifier("showFeedDetail", sender: nil)
     }
     
@@ -164,6 +205,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         if segue.identifier == "showFeedDetail" {
             if let controller = segue.destinationViewController as? DetailVC {
                 controller.detailForUser = authorDetail
+                controller.imageForUser = userImage
             }
         }
     }
