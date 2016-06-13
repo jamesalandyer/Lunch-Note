@@ -11,12 +11,16 @@ import Firebase
 
 class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellDeleteDelegate {
     
+    //Outlets
     @IBOutlet weak var mainProfileImageView: CustomImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var noNotesLabel: UILabel!
     
+    //Properties
     var notes = [Note]()
+    
+    //MARK: - Stack
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +34,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        //If the user is logged in, get data
         if FIRAuth.auth()?.currentUser != nil {
             let displayName = FirebaseClient.sharedInstance.currentDisplayName!
             self.navigationItem.title = displayName.uppercaseString
@@ -41,22 +46,47 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        //If the user is logged out, show login screen and switch to feed tab
         if FIRAuth.auth()?.currentUser == nil {
             performSegueWithIdentifier("showLogout", sender: nil)
             self.navigationController?.tabBarController?.selectedIndex = 0
         }
     }
     
+    //MARK: - Actions
+    
+    /**
+     Shows the edit screen.
+     */
+    func editButtonPressed() {
+        performSegueWithIdentifier("showEdit", sender: nil)
+    }
+    
+    /**
+     Shows the lunchbox screen.
+     */
+    func lunchboxButtonPressed() {
+        performSegueWithIdentifier("showLunchbox", sender: nil)
+    }
+    
+    //MARK: - Adjusting UI
+    
+    /**
+     Sets the navigation and tab bar.
+    */
     private func setView() {
         setNavigation()
         setTabBar()
     }
     
+    /**
+     Sets the navigation back button, lunchbox button, and edit button.
+     */
     private func setNavigation() {
         //Set Back Navigation Button
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
         self.navigationController!.navigationBar.tintColor = UIColor.whiteColor()
-        //Sets Post Button In Navigation
+        //Sets Lunchbox Button In Navigation
         let lunchbox = UIImage(named: "lunchbox_unselected.png")
         let lunchboxButton = UIButton()
         lunchboxButton.setImage(lunchbox, forState: .Normal)
@@ -64,32 +94,23 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         lunchboxButton.addTarget(self, action: #selector(lunchboxButtonPressed), forControlEvents: .TouchUpInside)
         let rightBarButton = UIBarButtonItem()
         rightBarButton.customView = lunchboxButton
-        //Sets Logout Button In Navigation
         self.navigationItem.rightBarButtonItem = rightBarButton
+        //Sets Edit Button In Navigation
         let leftBarButton = UIBarButtonItem(title: "Edit", style: .Done, target: self, action: #selector(editButtonPressed))
         leftBarButton.tintColor = lightRedColor
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
+    /**
+     Sets the tab bar text color.
+     */
     private func setTabBar() {
         //Set Title Colors
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor()], forState: .Selected)
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: lightGreyColor], forState: .Normal)
     }
     
-    func editButtonPressed() {
-        performSegueWithIdentifier("showEdit", sender: nil)
-    }
-    
-    func lunchboxButtonPressed() {
-        performSegueWithIdentifier("showLunchbox", sender: nil)
-    }
-    
     //MARK: - TableView
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notes.count
@@ -119,15 +140,22 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         }
     }
     
+    //MARK: - Retrieve Data
+    
+    /**
+     Gets the user's  current profile image and notes.
+     */
     private func getUserData() {
         self.noNotesLabel.hidden = true
         activityIndicator.hidden = false
         activityIndicator.startAnimating()
         
         if FirebaseClient.sharedInstance.currentUserImage != DEFAULT_PICTURE {
+            //Check cache
             if let cachedImage = FirebaseClient.Constants.LocalImages.imageCache.objectForKey(FirebaseClient.sharedInstance.currentUser!) as? UIImage {
                 mainProfileImageView.image = cachedImage
             } else {
+                //If not in chache, download it
                 let imageReference = FIRStorage.storage().referenceForURL(FirebaseClient.sharedInstance.currentUserImage)
                 FirebaseClient.sharedInstance.downloadImage(FirebaseClient.sharedInstance.currentUser!, url: imageReference, completionHandler: { (result) in
                     if let image = result {
@@ -148,6 +176,7 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
                     let notes = Array(notesDict.keys)
                     self.loadNotes(notes)
                 } else {
+                    //No notes
                     self.noNotesLabel.hidden = false
                     self.activityIndicator.hidden = true
                     self.tableView.reloadData()
@@ -159,6 +188,11 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         })
     }
     
+    /**
+     Gets the user's notes data.
+     
+     - Parameter notes: The array of the keys for the user's notes.
+     */
     private func loadNotes(notes: [String]) {
         for note in notes {
             FirebaseClient.Constants.Database.REF_NOTES.child(note).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -173,6 +207,14 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         self.activityIndicator.hidden = true
     }
     
+    //MARK: - Alerts
+    
+    /**
+     Shows an alert to the user.
+     
+     - Parameter title: The header of the alert.
+     - Parameter msg: The message of the alert.
+     */
     private func showAlert(title: String, msg: String) {
         let action = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
         let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
@@ -181,10 +223,16 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         presentViewController(action, animated: true, completion: nil)
     }
     
+    /**
+     Shows an delete alert to the user.
+     
+     - Parameter note: The key to the note the user wants to delete.
+     */
     func showDeleteAlert(note: String) {
         let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+            //Delete note from the feed and user profile
             let notesInFeed = FirebaseClient.Constants.Database.REF_NOTES.child(note)
             notesInFeed.removeValue()
             let notesInProfile = FirebaseClient.sharedInstance.notesReference.child(note)

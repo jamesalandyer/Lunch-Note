@@ -11,6 +11,7 @@ import FirebaseAuth
 
 class LoginVC: UIViewController, UITextFieldDelegate {
 
+    //Outlets
     @IBOutlet weak private var emailTextField: UITextField!
     @IBOutlet weak private var passwordTextField: UITextField!
     @IBOutlet weak private var submitButton: CustomButton!
@@ -22,10 +23,13 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak private var nameTextField: UITextField!
     @IBOutlet weak private var nameButton: CustomButton!
     
+    //Properties
     private let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     private var userEmail: String!
     private var userPassword: String!
+    
+    //MARK: - Stack
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +41,10 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         subscribeToKeyboardNotifications()
+        
+        //If the user is logged in but doesn't have a display name, show onboard
         if FirebaseClient.sharedInstance.currentUser != nil {
             if FirebaseClient.sharedInstance.currentDisplayName == nil {
                 showOnBoardScreen(true)
@@ -47,8 +54,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
         unsubscribeFromKeyboardNotifications()
     }
+    
+    //MARK: - Actions
 
     @IBAction func submitButtonPressed(sender: AnyObject) {
         dismissKeyboard()
@@ -169,26 +179,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         }
     }
     
-    private func showErrorAlert(title: String, msg: String, createUser: Bool) {
-        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
-        
-        if createUser {
-            let action = UIAlertAction(title: "Create", style: .Default, handler: { (action) in
-                self.createUser()
-            })
-            let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-            alert.addAction(cancel)
-            alert.addAction(action)
-        } else {
-            let action = UIAlertAction(title: "Ok", style: .Default, handler: nil)
-            alert.addAction(action)
-        }
-        
-        presentViewController(alert, animated: true, completion: nil)
-        
-        setUI(true)
-    }
-    
+    /**
+     Sets the UI to be enabled and full color or disabled and faded.
+     
+     - Parameter enable: A Bool of whether to enable UI.
+     */
     private func setUI(enable: Bool) {
         dismissKeyboard()
         
@@ -216,6 +211,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         enable ? loadingIndicator.removeFromSuperview() : view.addSubview(loadingIndicator)
     }
     
+    /**
+     Sets whether to show the onboard screen.
+     
+     - Parameter show: A Bool of whether to switch to onboard screen.
+     */
     private func showOnBoardScreen(show: Bool) {
         loginStackView.hidden = show
         forgotButton.hidden = show
@@ -224,12 +224,64 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         displayNameStackView.hidden = !show
     }
     
+    /**
+     Shows an error alert on the screen.
+     
+     - Parameter title: The header of the alert.
+     - Parameter msg: The message of the alert.
+     - Parameter action: A Bool of whether to add the create user button to the alert.
+     */
+    private func showErrorAlert(title: String, msg: String, createUser: Bool) {
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
+        
+        if createUser {
+            let action = UIAlertAction(title: "Create", style: .Default, handler: { (action) in
+                self.createUser()
+            })
+            let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+            alert.addAction(cancel)
+            alert.addAction(action)
+        } else {
+            let action = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+            alert.addAction(action)
+        }
+        
+        presentViewController(alert, animated: true, completion: nil)
+        
+        setUI(true)
+    }
+    
+    //MARK: - Create User
+    
+    /**
+     Creates a new user on firebase.
+     */
+    private func createUser() {
+        FIRAuth.auth()?.createUserWithEmail(userEmail, password: userPassword, completion: { (user, error) in
+            performUIUpdatesOnMain {
+                if error != nil {
+                    self.showErrorAlert("Couldn't Create User", msg: "Please make sure your password is 6 or more characters and try again.", createUser: false)
+                } else {
+                    if user != nil {
+                        self.showOnBoardScreen(true)
+                        self.setUI(true)
+                    } else {
+                        self.showErrorAlert("Unable To Retrieve Data", msg: "Please try again.", createUser: false)
+                    }
+                }
+            }
+        })
+    }
+    
+    //MARK: - TextField
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        //Rules for setting display name
         if textField == nameTextField {
             
             if range.length == 1 {
@@ -251,16 +303,29 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    //MARK: - Keyboard
+    
+    /**
+     Subscribes to the keyboard will show and hide notifications.
+     */
     private func subscribeToKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    /**
+     Unsubscribes from the keyboard will show and hide notifications.
+     */
     private func unsubscribeFromKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    /**
+     Adjusts the screen when the keyboard shows and hides the top button.
+     
+     - Parameter notification: The notification being passed through.
+     */
     func keyboardWillShow(notification: NSNotification) {
         if nameTextField.editing {
             logoImageView.hidden = true
@@ -268,6 +333,11 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         }
     }
     
+    /**
+     Adjusts the screen when the keyboard hides and shows the top button.
+     
+     - Parameter notification: The notification being passed through.
+     */
     func keyboardWillHide(notification: NSNotification) {
         if nameTextField.editing {
             logoImageView.hidden = false
@@ -275,37 +345,30 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         }
     }
     
+    /**
+     Gets the users keyboard height.
+     
+     - Parameter notification: The notification being passed through.
+     */
     private func getKeyboardHeight(notification: NSNotification) -> CGFloat {
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.CGRectValue().height
     }
     
+    /**
+     Dismisses all of the keyboards.
+     */
     private func dismissKeyboard() {
         emailTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
         nameTextField.resignFirstResponder()
     }
     
+    //MARK: - Touches
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         dismissKeyboard()
-    }
-    
-    private func createUser() {
-        FIRAuth.auth()?.createUserWithEmail(userEmail, password: userPassword, completion: { (user, error) in
-            performUIUpdatesOnMain {
-                if error != nil {
-                    self.showErrorAlert("Couldn't Create User", msg: "Please make sure your password is 6 or more characters and try again.", createUser: false)
-                } else {
-                    if user != nil {
-                        self.showOnBoardScreen(true)
-                        self.setUI(true)
-                    } else {
-                        self.showErrorAlert("Unable To Retrieve Data", msg: "Please try again.", createUser: false)
-                    }
-                }
-            }
-        })
     }
     
 }

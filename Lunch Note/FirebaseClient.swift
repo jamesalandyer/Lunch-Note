@@ -11,6 +11,7 @@ import Firebase
 
 class FirebaseClient {
     
+    //Properties
     static let sharedInstance = FirebaseClient()
     
     var downloadTask: FIRStorageDownloadTask!
@@ -47,6 +48,14 @@ class FirebaseClient {
         return currentImage!
     }
     
+    /**
+     Downloads an image from firebase storage.
+     
+     - Parameter author: The uid of the author of the image.
+     - Parameter url: The storage reference for the image.
+     - Parameter completionHandler: Handles what to do once the request is done.
+     - Parameter success: A Bool of whether the request was successful.
+     */
     func downloadImage(author: String, url: FIRStorageReference, completionHandler: (result: UIImage?) -> Void) {
         
         let localURL: NSURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(author)

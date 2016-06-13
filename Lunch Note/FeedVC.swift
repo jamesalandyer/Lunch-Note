@@ -12,14 +12,18 @@ import FirebaseDatabase
 
 class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellAuthorDelegate, NoteCellDeleteDelegate {
     
+    //Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    //Properties
     var notes = [Note]()
     var notesLoaded = false
     var authorDetail: String!
     var userImage: String!
 
+    //MARK: - Stack
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,6 +36,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        //If the user is logged in, load notes
         if FIRAuth.auth()?.currentUser != nil && FirebaseClient.sharedInstance.currentDisplayName != nil {
             loadNotes()
         }
@@ -40,6 +45,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        //If the user is not logged in or doesn't have a display name, show the login screen
         if FIRAuth.auth()?.currentUser == nil || FirebaseClient.sharedInstance.currentDisplayName == nil {
             performSegueWithIdentifier("showLogin", sender: nil)
         }
@@ -47,11 +53,44 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         tableView.reloadData()
     }
     
+    //MARK: - Actions
+    
+    /**
+     Shows the post screen.
+    */
+    func postButtonPressed() {
+        performSegueWithIdentifier("showPost", sender: nil)
+    }
+    
+    /**
+     Shows the logging out alert.
+    */
+    func logoutButtonPressed() {
+        let action = UIAlertController(title: "Logging Out", message: "Are you sure that you want to log out?", preferredStyle: .Alert)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let logout = UIAlertAction(title: "Logout", style: .Destructive) { (logout) in
+            self.logout()
+        }
+        
+        action.addAction(cancel)
+        action.addAction(logout)
+        
+        presentViewController(action, animated: true, completion: nil)
+    }
+    
+    //MARK: - Adjusting UI
+    
+    /**
+     Sets the navigation and tab bar.
+     */
     private func setView() {
         setNavigation()
         setTabBar()
     }
     
+    /**
+     Sets the navigation back button, lunchbox button, and edit button.
+     */
     private func setNavigation() {
         //Set Center Image
         let logo = UIImage(named: "lunchbox_nav.png")
@@ -75,6 +114,9 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
+    /**
+     Sets the tab bar text color.
+     */
     private func setTabBar() {
         //Set Title Colors
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor()], forState: .Selected)
@@ -83,8 +125,9 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
     
     //MARK: - TableView
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        //For iPads
+        cell.backgroundColor = UIColor.clearColor()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -116,49 +159,11 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         }
     }
     
-    func postButtonPressed() {
-        performSegueWithIdentifier("showPost", sender: nil)
-    }
+    //MARK: - Retrieve Data
     
-    func logoutButtonPressed() {
-        let action = UIAlertController(title: "Logging Out", message: "Are you sure that you want to log out?", preferredStyle: .Alert)
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        let logout = UIAlertAction(title: "Logout", style: .Destructive) { (logout) in
-            self.logout()
-        }
-        
-        action.addAction(cancel)
-        action.addAction(logout)
-        
-        presentViewController(action, animated: true, completion: nil)
-    }
-    
-    private func logout() {
-        do {
-            try FIRAuth.auth()!.signOut()
-            notesLoaded = false
-            notes = []
-            FirebaseClient.Constants.Database.REF_NOTES.removeAllObservers()
-            tableView.reloadData()
-            performSegueWithIdentifier("showLogin", sender: nil)
-        } catch {
-            showAlert("Unable To Logout", msg: "Please try logging out again.")
-        }
-    }
-    
-    private func showAlert(title: String, msg: String) {
-        let action = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
-        let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
-        
-        action.addAction(ok)
-        presentViewController(action, animated: true, completion: nil)
-    }
-    
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        //For iPads
-        cell.backgroundColor = UIColor.clearColor()
-    }
-    
+    /**
+     Gets all of the notes for the feed.
+     */
     private func loadNotes() {
         if !notesLoaded {
             activityIndicator.hidden = false
@@ -183,10 +188,48 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         }
     }
     
+    /**
+     Logs the user out and shows the login screen.
+    */
+    private func logout() {
+        do {
+            try FIRAuth.auth()!.signOut()
+            notesLoaded = false
+            notes = []
+            FirebaseClient.Constants.Database.REF_NOTES.removeAllObservers()
+            tableView.reloadData()
+            performSegueWithIdentifier("showLogin", sender: nil)
+        } catch {
+            showAlert("Unable To Logout", msg: "Please try logging out again.")
+        }
+    }
+    
+    //MARK: - Alerts
+    
+    /**
+     Shows an alert to the user.
+     
+     - Parameter title: The header of the alert.
+     - Parameter msg: The message of the alert.
+     */
+    private func showAlert(title: String, msg: String) {
+        let action = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
+        let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+        
+        action.addAction(ok)
+        presentViewController(action, animated: true, completion: nil)
+    }
+    
+    /**
+     Shows an delete alert to the user.
+     
+     - Parameter note: The key to the note the user wants to delete.
+     */
     func showDeleteAlert(note: String) {
         let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+            //Delete the note from the users profile and feed
             let notesInFeed = FirebaseClient.Constants.Database.REF_NOTES.child(note)
             notesInFeed.removeValue()
             let notesInProfile = FirebaseClient.sharedInstance.notesReference.child(note)
@@ -200,6 +243,14 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         presentViewController(deleteController, animated: true, completion: nil)
     }
     
+    //MARK: - Segue
+    
+    /**
+     Shows the author's profile page.
+     
+     - Parameter author: The string uid of the current author.
+     - Parameter image: The string url of the author's image.
+     */
     func showAuthorDetail(author: String, image: String) {
         authorDetail = author
         userImage = image

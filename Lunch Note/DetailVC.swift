@@ -10,15 +10,19 @@ import UIKit
 import Firebase
 
 class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellDeleteDelegate {
-
+    
+    //Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mainProfileImageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var noNotesLabel: UILabel!
     
+    //Properties
     var detailForUser: String!
     var imageForUser: String!
     var notes = [Note]()
+    
+    //MARK: - Stack
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,10 +38,6 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
     }
     
     //MARK: - TableView
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notes.count
@@ -67,14 +67,21 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         }
     }
     
+    //MARK: - Retrieve Data
+    
+    /**
+     Gets the user's current profile image, notes, and display name.
+     */
     private func getUserData() {
         activityIndicator.hidden = false
         activityIndicator.startAnimating()
         
         if imageForUser != nil && imageForUser != DEFAULT_PICTURE {
+            //Check cache
             if let cachedImage = FirebaseClient.Constants.LocalImages.imageCache.objectForKey(detailForUser) as? UIImage {
                 mainProfileImageView.image = cachedImage
             } else {
+                //If not in cache, download it
                 let imageReference = FIRStorage.storage().referenceForURL(imageForUser)
                 FirebaseClient.sharedInstance.downloadImage(detailForUser, url: imageReference, completionHandler: { (result) in
                     if let image = result {
@@ -97,6 +104,7 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
                     self.loadNotes(notes)
                     self.noNotesLabel.hidden = true
                 } else {
+                    //No notes
                     self.noNotesLabel.hidden = false
                     self.activityIndicator.hidden = true
                     self.tableView.reloadData()
@@ -109,6 +117,11 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         })
     }
     
+    /**
+     Gets the user's notes data.
+     
+     - Parameter notes: The array of the keys for the user's notes.
+     */
     private func loadNotes(notes: [String]) {
         for note in notes {
             FirebaseClient.Constants.Database.REF_NOTES.child(note).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -123,6 +136,14 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         self.activityIndicator.hidden = true
     }
     
+    //MARK: - Alerts
+    
+    /**
+     Shows an alert to the user.
+     
+     - Parameter title: The header of the alert.
+     - Parameter msg: The message of the alert.
+     */
     private func showAlert(title: String, msg: String) {
         let action = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
         let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
@@ -131,10 +152,16 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         presentViewController(action, animated: true, completion: nil)
     }
     
+    /**
+     Shows an delete alert to the user.
+     
+     - Parameter note: The key to the note the user wants to delete.
+     */
     func showDeleteAlert(note: String) {
         let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+            //Delete note from the feed and user profile
             let notesInFeed = FirebaseClient.Constants.Database.REF_NOTES.child(note)
             notesInFeed.removeValue()
             let notesInProfile = FirebaseClient.sharedInstance.notesReference.child(note)

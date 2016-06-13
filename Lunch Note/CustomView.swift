@@ -14,6 +14,7 @@ class CustomView: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
         layer.cornerRadius = 10.0
         layer.borderWidth = 1.0
         layer.borderColor = UIColor(red: borderColor, green: borderColor, blue: borderColor, alpha: 1.0).CGColor

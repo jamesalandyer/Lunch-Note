@@ -8,12 +8,21 @@
 
 import UIKit
 
+//Custom Colors
 let lightGreyColor = UIColor(red: 195 / 255, green: 195 / 255, blue: 195 / 255, alpha: 1.0)
 let lightRedColor = UIColor(red: 255 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1.0)
 
+//Default Strings
 let EMPTY = "EMPTY"
 let DEFAULT_PICTURE = "https://firebasestorage.googleapis.com/v0/b/lunchnote-bdd83.appspot.com/o/profilepictures%2Fdefaultpicture%403x.png?alt=media&token=278dc1ab-b638-44af-8738-b85a8b4a702a"
 
+/**
+ Gets the current month.
+ 
+ - Parameter month: The integer for the month.
+ 
+ - Returns: The string of the month.
+*/
 func getMonth(month: Int) -> String {
     switch month {
     case 1:
@@ -45,6 +54,13 @@ func getMonth(month: Int) -> String {
     }
 }
 
+/**
+ Checks whether the email is valid.
+ 
+ - Parameter testStr: Takes the email address to test.
+ 
+ - Returns: A Bool of whether it is valid.
+*/
 func isValidEmail(testStr:String) -> Bool {
     let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
     let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)

@@ -11,14 +11,17 @@ import Firebase
 
 class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellAuthorDelegate {
 
-    
+    //Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var noNotesStackView: UIStackView!
     
+    //Properties
     var lunchbox: [String]?
     var notes = [Note]()
     var authorDetail: String!
+    
+    //MARK: - Stack
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,8 +36,12 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         super.viewWillAppear(animated)
         
         getCurrentLunchbox { (success) in
-            if self.lunchbox != nil {
+            if success {
                 self.loadNotes()
+            } else {
+                self.tableView.reloadData()
+                self.activityIndicator.hidden = true
+                self.noNotesStackView.hidden = false
             }
         }
     }
@@ -50,6 +57,11 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         FirebaseClient.sharedInstance.lunchBoxReference.removeAllObservers()
     }
     
+    //MARK: - Adjusting UI
+    
+    /**
+     Sets the navigation up to show the center image, back button, and lunchbox button.
+    */
     private func setNavigation() {
         //Set Center Image
         let logo = UIImage(named: "lunchbox_nav.png")
@@ -58,7 +70,7 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         //Set Back Navigation Button
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
         self.navigationController!.navigationBar.tintColor = UIColor.whiteColor()
-        //Sets Post Button In Navigation
+        //Sets Lunchbox Button In Navigation
         let lunchbox = UIImage(named: "lunchbox_selected.png")
         let lunchboxButton = UIButton()
         lunchboxButton.setImage(lunchbox, forState: .Normal)
@@ -69,10 +81,6 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     }
     
     //MARK: - TableView
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notes.count
@@ -102,6 +110,14 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         }
     }
     
+    //MARK: - Retrieve Data
+    
+    /**
+     Gets the current lunchbox posts that the user has.
+     
+     - Parameter completionHandler: Handles what to do once the request is done.
+     - Parameter success: A Bool of whether the request was successful.
+    */
     private func getCurrentLunchbox(completionHandler: (success: Bool) -> Void) {
         activityIndicator.startAnimating()
         activityIndicator.hidden = false
@@ -115,13 +131,14 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
                 
                 completionHandler(success: true)
             } else {
-                self.tableView.reloadData()
-                self.activityIndicator.hidden = true
-                self.noNotesStackView.hidden = false
+                completionHandler(success: false)
             }
         })
     }
     
+    /**
+     Loads the notes from the users lunchbox.
+    */
     private func loadNotes() {
         
         for lunch in lunchbox! {
@@ -137,6 +154,14 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         activityIndicator.hidden = true
     }
     
+    //MARK: - Segue
+    
+    /**
+     Shows the author's profile page.
+     
+     - Parameter author: The string uid of the current author.
+     - Parameter image: The string url of the author's image.
+     */
     func showAuthorDetail(author: String, image: String) {
         authorDetail = author
         performSegueWithIdentifier("showLunchboxDetail", sender: nil)

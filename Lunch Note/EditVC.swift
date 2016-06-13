@@ -11,6 +11,7 @@ import Firebase
 
 class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
+    //Outlets
     @IBOutlet weak var deleteAccountButton: CustomButton!
     @IBOutlet weak var addPhotoButton: UIButton!
     @IBOutlet weak var profileImageView: CustomImageView!
@@ -24,6 +25,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     @IBOutlet weak var continueButton: CustomButton!
     @IBOutlet weak var loginStackView: UIStackView!
     
+    //Properties
     private let imagePicker = UIImagePickerController()
     private let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
@@ -35,9 +37,12 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     private var newPassword: String!
     private var loggedIn = false
     
+    //MARK: - Stack
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //Setting Delegates
         imagePicker.delegate = self
         displayNameTextField.delegate = self
         emailAddressTextField.delegate = self
@@ -62,6 +67,8 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         
         unsubscribeFromKeyboardNotifications()
     }
+    
+    //MARK: - Actions
     
     @IBAction func addPhotoButtonPressed(sender: AnyObject) {
         setUI(false)
@@ -96,6 +103,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
             updateUserProfile(FirebaseClient.sharedInstance.currentUserImage, displayName: newDisplayName)
             FirebaseClient.sharedInstance.userReference.child("displayName").setValue(newDisplayName.uppercaseString)
         }
+        
         if emailAddressTextField.text != "" {
             if let email = emailAddressTextField.text where isValidEmail(email) {
                 newEmailAddress = email
@@ -104,6 +112,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
                 
             }
         }
+        
         if passwordTextField.text != "" {
             if let password = passwordTextField.text where password.characters.count >= 6 {
                 newPassword = password
@@ -112,6 +121,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
                 
             }
         }
+        
         if !emailPassed && !passwordPassed {
             showAlert("Invalid Email Address & Password", msg: "Please enter a valid email address and password.", action: false)
         } else if !emailPassed {
@@ -157,38 +167,54 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
                         self.loggedIn = true
                         
                         if let newEmail = self.newEmailAddress {
+                            //If user entered an email, save it
                             self.setUserEmail(newEmail, completionHandler: { (success) in
                                 if success {
+                                    //New email was saved
                                     if let newPassword = self.newPassword {
+                                        //If the user also entered a password, save it
                                         self.setUserPassword(newPassword, completionHandler: { (success) in
                                             if success {
+                                                //Password saved
                                                 self.dismissViewControllerAnimated(true, completion: nil)
                                             } else {
+                                                //Password didn't save
                                                 self.showAlert("Unable To Update Password", msg: "There was an error updating your password.", action: false)
                                             }
                                         })
                                     } else {
+                                        //User did not enter a new password
                                         self.dismissViewControllerAnimated(true, completion: nil)
                                     }
                                 } else {
+                                    //Email didn't save
                                     self.showAlert("Unable To Update Email Address", msg: "There was an error updating your email address.", action: false)
+                                    //If password was entered, both weren't saved
                                     if self.newPassword != nil {
                                         self.showAlert("Email & Password Not Updated", msg: "Email & password failed to update. Please try again.", action: false)
                                     }
                                 }
                             })
+                            
                         } else if let newPassword = self.newPassword {
+                            //The user only entered a new password, save it
                             self.setUserPassword(newPassword, completionHandler: { (success) in
                                 if success {
+                                    //Password saved
                                     self.dismissViewControllerAnimated(true, completion: nil)
                                 } else {
+                                    //Password didn't save
                                     self.showAlert("Unable To Update Password", msg: "There was an error updating your password.", action: false)
                                 }
+                                
                             })
+                            
                         } else {
+                            //User didn't enter email or password, used for delete account verification
                             self.showUserLogin(false)
                             self.setUI(true)
                         }
+                        
                     } else {
                         self.showAlert("Unable To Retrieve Data", msg: "Please try logging in again.", action: false)
                     }
@@ -198,6 +224,17 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         })
     }
     
+    @IBAction func cancelButtonPressed(sender: AnyObject) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    //MARK: - Adjusting UI
+    
+    /**
+     Sets the UI to be enabled and full color or disabled and faded.
+     
+     - Parameter enable: A Bool of whether to enable UI.
+     */
     private func setUI(enable: Bool) {
         dismissKeyboard()
         
@@ -230,6 +267,11 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         enable ? loadingIndicator.removeFromSuperview() : view.addSubview(loadingIndicator)
     }
     
+    /**
+     Hides the edit profile and screen and shows a screen to login or reverses it.
+     
+     - Parameter show: A Bool of whether to show the user login.
+     */
     private func showUserLogin(show: Bool) {
         deleteAccountButton.hidden = show
         profileImageView.hidden = show
@@ -242,35 +284,14 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         loginStackView.hidden = !show
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        dismissViewControllerAnimated(true, completion: nil)
-        let imageData: NSData = UIImageJPEGRepresentation(image, 0.2)!
-        let imageSize: Int = imageData.length / 1024
-        
-        if imageSize < 2048 {
-            let ref = FirebaseClient.sharedInstance.storageReference
-            
-            uploadTask = ref.putData(imageData, metadata: nil) { metadata, error in
-                if (error != nil) {
-                    self.showAlert("Upload Failed", msg: "Please try again.", action: false)
-                } else {
-                    if let downloadURL = metadata!.downloadURL() {
-                        let downloadString = downloadURL.absoluteString
-                        self.updateUserProfile(downloadString, displayName: nil)
-                        self.setUI(true)
-                    }
-                    
-                }
-            }
-        } else {
-            showAlert("Unable To Upload", msg: "Your image size is too large.", action: false)
-        }
-    }
-    
-    @IBAction func cancelButtonPressed(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
+    /**
+     Shows an alert on the screen.
+     
+     - Parameter title: The header of the alert.
+     - Parameter msg: The message of the alert.
+     - Parameter action: A Bool of whether to add the delete photo button to the alert.
+     - Parameter account: (Default: False) A Bool of whether to add the delete account button to the alert.
+     */
     private func showAlert(title: String, msg: String, action: Bool, account: Bool = false) {
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
         let dismissTitle = action || account ? "Cancel" : "Ok"
@@ -301,6 +322,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
                 user?.deleteWithCompletion { error in
                     if error != nil {
                         self.showAlert("Unable To Delete Account", msg: "There was an error deleting your account.", action: false)
+                        self.setUI(true)
                     } else {
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
@@ -310,12 +332,17 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         }
         
         alert.addAction(dismiss)
-        if !action {
+        if !action && !account {
             setUI(true)
         }
         presentViewController(alert, animated: true, completion: nil)
     }
     
+    //MARK: - Retrieve Data
+    
+    /**
+     Retieves the users current notes.
+    */
     private func getUserData() {
         FirebaseClient.sharedInstance.notesReference.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let dataDict = snapshot.value as? Dictionary<String, AnyObject> {
@@ -324,13 +351,18 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         })
     }
     
+    /**
+     Retieves the users current profile photo.
+     */
     private func getUserImage() {
         if FirebaseClient.sharedInstance.currentUserImage != DEFAULT_PICTURE {
+            //Check cache
             if let cachedImage = FirebaseClient.Constants.LocalImages.imageCache.objectForKey(FirebaseClient.sharedInstance.currentUser!) as? UIImage {
                 profileImageView.image = cachedImage
                 let delete = UIImage(named: "delete_photo.png")
                 addPhotoButton.setImage(delete, forState: .Normal)
             } else {
+                //If not in cache, download it
                 let imageReference = FIRStorage.storage().referenceForURL(FirebaseClient.sharedInstance.currentUserImage)
                 FirebaseClient.sharedInstance.downloadImage(FirebaseClient.sharedInstance.currentUser!, url: imageReference, completionHandler: { (result) in
                     if let image = result {
@@ -347,6 +379,15 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         }
     }
     
+    //MARK: - Update Data
+    
+    /**
+     Sets a new user email for login.
+     
+     - Parameter email: A string of the new email the user wants to set.
+     - Parameter completionHandler: Handles what to do once the request is done.
+     - Parameter success: A Bool of whether the request was successful.
+     */
     private func setUserEmail(email: String, completionHandler: (success: Bool) -> Void) {
         let user = FIRAuth.auth()?.currentUser
         
@@ -359,6 +400,13 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         }
     }
     
+    /**
+     Sets a new user password for login.
+     
+     - Parameter password: A string of the new password the user wants to set.
+     - Parameter completionHandler: Handles what to do once the request is done.
+     - Parameter success: A Bool of whether the request was successful.
+     */
     private func setUserPassword(password: String, completionHandler: (success: Bool) -> Void) {
         let user = FIRAuth.auth()?.currentUser
         
@@ -371,6 +419,12 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         }
     }
     
+    /**
+     Updates the current users profile which is their display name and profile image.
+     
+     - Parameter imageURL: (Optional) The new image url to the profile photo.
+     - Parameter displayName: (Optional) The new display name for the user.
+    */
     private func updateUserProfile(imageURL: String?, displayName: String?) {
         let user = FIRAuth.auth()?.currentUser
         if let user = user {
@@ -380,15 +434,18 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
             let url = imageURL ?? DEFAULT_PICTURE
             let changeURL = url != FirebaseClient.sharedInstance.currentUserImage
             changeRequest.photoURL = NSURL(string: url)
+            
             changeRequest.commitChangesWithCompletion { error in
                 if error != nil {
                     self.showAlert("Unable To Update", msg: "Please try again.", action: false)
                 } else {
+                    //If the profile photo url was actually changed
                     if changeURL {
                         self.updateUserPosts(url)
                         self.getUserImage()
                     }
-                    if self.emailAddressTextField.text == "" && self.passwordTextField.text == "" {
+                    //If there is nothing else to do
+                    if self.emailAddressTextField.text == "" && self.passwordTextField.text == "" && self.displayNameTextField.text != "" {
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
                 }
@@ -396,11 +453,48 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         }
     }
     
+    /**
+     Updates the authorImage field of all of the users posts to reflect the new image.
+     
+     - Parameter imageUrl: The string of the new image url.
+    */
     private func updateUserPosts(imageUrl: String) {
         for note in currentUserNotes {
             FirebaseClient.Constants.Database.REF_NOTES.child(note).child("authorImage").setValue(imageUrl)
         }
     }
+    
+    //MARK: - ImagePicker
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        dismissViewControllerAnimated(true, completion: nil)
+        //Get the image and compress it into a JPEG
+        let imageData: NSData = UIImageJPEGRepresentation(image, 0.2)!
+        let imageSize: Int = imageData.length / 1024
+        
+        //Make sure that the image isn't to large
+        if imageSize < 2048 {
+            let ref = FirebaseClient.sharedInstance.storageReference
+            
+            uploadTask = ref.putData(imageData, metadata: nil) { metadata, error in
+                if (error != nil) {
+                    self.showAlert("Upload Failed", msg: "Please try again.", action: false)
+                } else {
+                    if let downloadURL = metadata!.downloadURL() {
+                        let downloadString = downloadURL.absoluteString
+                        FirebaseClient.Constants.LocalImages.imageCache.removeObjectForKey(FirebaseClient.sharedInstance.currentUser!)
+                        self.updateUserProfile(downloadString, displayName: nil)
+                        self.setUI(true)
+                    }
+                    
+                }
+            }
+        } else {
+            showAlert("Unable To Upload", msg: "Your image size is too large.", action: false)
+        }
+    }
+    
+    //MARK: - TextField
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -408,6 +502,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
+        //Only show the save button if the user has entered anything
         if displayNameTextField.text != "" || emailAddressTextField.text != "" || passwordTextField.text != "" {
             saveButton.enabled = true
             saveButton.alpha = 1.0
@@ -418,6 +513,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        //Rules for making a display name
         if textField == displayNameTextField {
             
             if range.length == 1 {
@@ -439,37 +535,67 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         return true
     }
     
+    //MARK: - Keyboard
+    
+    /**
+     Subscribes to the keyboard will show and hide notifications.
+    */
     private func subscribeToKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    /**
+     Unsubscribes from the keyboard will show and hide notifications.
+     */
     private func unsubscribeFromKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    /**
+     Adjusts the screen when the keyboard shows and hides the top button.
+     
+     - Parameter notification: The notification being passed through.
+    */
     func keyboardWillShow(notification: NSNotification) {
         deleteAccountButton.hidden = true
         view.frame.origin.y = getKeyboardHeight(notification) * -0.25
     }
     
+    /**
+     Adjusts the screen when the keyboard hides and shows the top button.
+     
+     - Parameter notification: The notification being passed through.
+     */
     func keyboardWillHide(notification: NSNotification) {
         deleteAccountButton.hidden = false
         view.frame.origin.y = 0
     }
     
+    /**
+     Gets the users keyboard height.
+     
+     - Parameter notification: The notification being passed through.
+     */
     private func getKeyboardHeight(notification: NSNotification) -> CGFloat {
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.CGRectValue().height
     }
     
+    /**
+     Dismisses all of the keyboards.
+    */
     private func dismissKeyboard() {
         emailAddressTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
         displayNameTextField.resignFirstResponder()
+        currentEmailAddressTextField.resignFirstResponder()
+        currentPasswordTextField.resignFirstResponder()
     }
+    
+    //MARK: - Touches
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         dismissKeyboard()

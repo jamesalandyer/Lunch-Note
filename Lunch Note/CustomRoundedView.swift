@@ -12,6 +12,7 @@ class CustomRoundedView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        
         layer.cornerRadius = 5.0
     }
 

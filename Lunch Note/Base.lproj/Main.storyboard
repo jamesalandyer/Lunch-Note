@@ -771,9 +771,9 @@
                                                     </constraints>
                                                     <variation key="default">
                                                         <mask key="constraints">
+                                                            <exclude reference="BBl-Gq-hFj"/>
                                                             <exclude reference="MbA-3H-AaP"/>
                                                             <exclude reference="ci4-be-5wp"/>
-                                                            <exclude reference="BBl-Gq-hFj"/>
                                                             <exclude reference="g6J-6a-Eal"/>
                                                         </mask>
                                                     </variation>

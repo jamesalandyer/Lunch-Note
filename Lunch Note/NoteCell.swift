@@ -11,11 +11,13 @@ import Firebase
 
 class NoteCell: UITableViewCell {
 
+    //Outlets
     @IBOutlet weak private var noteLabel: UILabel!
     @IBOutlet weak private var lunchBoxButton: UIImageView!
     @IBOutlet weak private var dateLabel: UILabel!
     @IBOutlet weak private var profileButton: CustomImageView!
     
+    //Properties
     private var user: String {
         return FirebaseClient.sharedInstance.currentUser!
     }
@@ -41,9 +43,14 @@ class NoteCell: UITableViewCell {
         lunchBoxButton.userInteractionEnabled = true
     }
     
+    /**
+     Configures the cell based on the note for the cell.
+     
+     - Parameter note: The note for the cell.
+     */
     func configureCell(note: Note) {
         currentNote = note
-        lunchboxNote = FirebaseClient.sharedInstance.lunchBoxReference.child(currentNote.noteKey)
+        lunchboxNote = FirebaseClient.sharedInstance.lunchBoxReference.child(note.noteKey)
         
         profileButton.image = UIImage(named: "defaultpicture.png")
         
@@ -81,6 +88,9 @@ class NoteCell: UITableViewCell {
         dateLabel.text = note.noteDate
     }
     
+    /**
+     Selects what type of tap it is based on if the user made the note.
+     */
     func lunchBoxGesturePressed() {
         if user == currentNote.noteAuthor {
             deleteTapped(lunchBoxGesture)
@@ -89,6 +99,11 @@ class NoteCell: UITableViewCell {
         }
     }
     
+    /**
+     Adjusts the users lunchbox when tapped.
+     
+     - Parameter sender: The tap gesture.
+     */
     func lunchTapped(sender: UITapGestureRecognizer) {
         
         lunchboxNote.observeSingleEventOfType(.Value, withBlock: { snapshot in
@@ -116,6 +131,11 @@ class NoteCell: UITableViewCell {
         }
     }
     
+    /**
+     Shows the author detail screen when the user taps the button.
+     
+     - Parameter sender: The tap gesture.
+     */
     func profileTapped(sender: UITapGestureRecognizer) {
         if let delegate = authorDelegate {
             delegate.showAuthorDetail(currentNote.noteAuthor, image: currentNote.noteAuthorImage)

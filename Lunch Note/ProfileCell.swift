@@ -11,11 +11,13 @@ import Firebase
 
 class ProfileCell: UITableViewCell {
 
+    //Outlets
     @IBOutlet weak var noteLabel: UILabel!
     @IBOutlet weak var lunchBoxButton: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var profileImageView: CustomImageView!
     
+    //Properties
     private var user: String {
         return FirebaseClient.sharedInstance.currentUser!
     }
@@ -34,9 +36,14 @@ class ProfileCell: UITableViewCell {
         lunchBoxButton.userInteractionEnabled = true
     }
     
+    /**
+     Configures the cell based on the note for the cell.
+     
+     - Parameter note: The note for the cell.
+     */
     func configureCell(note: Note) {
         currentNote = note
-        lunchboxNote = FirebaseClient.sharedInstance.lunchBoxReference.child(currentNote.noteKey)
+        lunchboxNote = FirebaseClient.sharedInstance.lunchBoxReference.child(note.noteKey)
         
         profileImageView.image = UIImage(named: "defaultpicture.png")
         
@@ -46,23 +53,27 @@ class ProfileCell: UITableViewCell {
             }
         }
         
-        lunchBoxButton.image = UIImage(named: "lunchbox_add.png")
         lunchBoxButton.addGestureRecognizer(lunchBoxGesture)
         
         if user == currentNote.noteAuthor {
             lunchBoxButton.image = UIImage(named: "notetrash.png")
+        } else {
+            lunchboxNote.observeSingleEventOfType(.Value, withBlock: { snapshot in
+                if snapshot.value as? NSNull == nil {
+                    self.lunchBoxButton.image = UIImage(named: "lunchbox_added.png")
+                } else {
+                    self.lunchBoxButton.image = UIImage(named: "lunchbox_add.png")
+                }
+            })
         }
-        
-        lunchboxNote.observeSingleEventOfType(.Value, withBlock: { snapshot in
-            if snapshot.value as? NSNull == nil {
-                self.lunchBoxButton.image = UIImage(named: "lunchbox_added.png")
-            }
-        })
         
         noteLabel.text = "\"" + note.note + "\""
         dateLabel.text = note.noteDate
     }
     
+    /**
+     Selects what type of tap it is based on if the user made the note.
+     */
     func lunchBoxGesturePressed() {
         if user == currentNote.noteAuthor {
             deleteTapped(lunchBoxGesture)
@@ -71,6 +82,11 @@ class ProfileCell: UITableViewCell {
         }
     }
     
+    /**
+     Adjusts the users lunchbox when tapped.
+     
+     - Parameter sender: The tap gesture.
+     */
     func lunchTapped(sender: UITapGestureRecognizer) {
         
         lunchboxNote.observeSingleEventOfType(.Value, withBlock: { snapshot in

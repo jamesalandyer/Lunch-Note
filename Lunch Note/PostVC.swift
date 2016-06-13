@@ -7,16 +7,21 @@
 //
 
 import UIKit
+import Firebase
 
 class PostVC: UIViewController, UITextViewDelegate {
 
+    //Outlets
     @IBOutlet weak private var enterMessageStackView: UIStackView!
     @IBOutlet weak private var postLogoImageView: UIImageView!
     @IBOutlet weak private var messageTextView: CustomTextView!
     @IBOutlet weak private var buttonStackView: UIStackView!
     @IBOutlet weak var inspireButton: CustomButton!
     
+    //Properties
     private let defaultText = "Enter Inspiration"
+    
+    //MARK: - Stack
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,17 +31,22 @@ class PostVC: UIViewController, UITextViewDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         subscribeToKeyboardNotifications()
         inspireEnabled(false)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
         unsubscribeFromKeyboardNotifications()
     }
     
+    //MARK: - Actions
+    
     @IBAction func inspireButtonPressed(sender: AnyObject) {
         postToFirebase()
+        
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -44,7 +54,26 @@ class PostVC: UIViewController, UITextViewDelegate {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func getCurrentDate() -> String {
+    //MARK: - Adjusting UI
+    
+    /**
+     Sets the inspire button.
+     
+     - Parameter enable: A Bool of whether the button is enabled.
+    */
+    private func inspireEnabled(enable: Bool) {
+        inspireButton.enabled = enable
+        inspireButton.alpha = enable ? 1.0 : 0.5
+    }
+    
+    //MARK: - Post
+    
+    /**
+     Gets the current date when called.
+     
+     - Returns: The string of the current date.
+    */
+    private func getCurrentDate() -> String {
         let date = NSDate()
         let calendar = NSCalendar.currentCalendar()
         let components = calendar.components([.Day , .Month , .Year], fromDate: date)
@@ -54,6 +83,9 @@ class PostVC: UIViewController, UITextViewDelegate {
         return today
     }
     
+    /**
+     Posts the note to the firebase database.
+     */
     func postToFirebase() {
         if let currentUser = FirebaseClient.sharedInstance.currentUser {
             let post: Dictionary<String, AnyObject> = [
@@ -74,12 +106,14 @@ class PostVC: UIViewController, UITextViewDelegate {
     //MARK: - TextView
     
     func textViewDidBeginEditing(textView: UITextView) {
+        //If the user has entered anything, clear the text
         if textView.text == defaultText {
             textView.text = ""
         }
     }
     
     func textViewDidEndEditing(textView: UITextView) {
+        //If the default text isn't in the text view, allow the user to post
         if messageTextView.text != defaultText {
             inspireEnabled(true)
         } else {
@@ -88,6 +122,7 @@ class PostVC: UIViewController, UITextViewDelegate {
     }
     
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        //Rules for setting the display name
         if range.length == 1 {
             return true
         }
@@ -112,35 +147,53 @@ class PostVC: UIViewController, UITextViewDelegate {
         messageTextView.resignFirstResponder()
     }
     
+    //MARK: - Keyboard
+    
+    /**
+     Subscribes to the keyboard will show and hide notifications.
+     */
     private func subscribeToKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    /**
+     Unsubscribes from the keyboard will show and hide notifications.
+     */
     private func unsubscribeFromKeyboardNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    /**
+     Adjusts the screen when the keyboard shows and hides the top button.
+     
+     - Parameter notification: The notification being passed through.
+     */
     func keyboardWillShow(notification: NSNotification) {
         postLogoImageView.hidden = true
         view.frame.origin.y = getKeyboardHeight(notification) * -0.5
     }
     
+    /**
+     Adjusts the screen when the keyboard hides and shows the top button.
+     
+     - Parameter notification: The notification being passed through.
+     */
     func keyboardWillHide(notification: NSNotification) {
         postLogoImageView.hidden = false
         view.frame.origin.y = 0
     }
     
+    /**
+     Gets the users keyboard height.
+     
+     - Parameter notification: The notification being passed through.
+     */
     private func getKeyboardHeight(notification: NSNotification) -> CGFloat {
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.CGRectValue().height
-    }
-    
-    private func inspireEnabled(enable: Bool) {
-        inspireButton.enabled = enable
-        inspireButton.alpha = enable ? 1.0 : 0.5
     }
 
 }
