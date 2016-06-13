@@ -45,6 +45,12 @@ func getMonth(month: Int) -> String {
     }
 }
 
+func isValidEmail(testStr:String) -> Bool {
+    let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+    let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+    return emailTest.evaluateWithObject(testStr)
+}
+
 //Switchs to the main queue to update UI
 func performUIUpdatesOnMain(updates: () -> Void) {
     dispatch_async(dispatch_get_main_queue()) {

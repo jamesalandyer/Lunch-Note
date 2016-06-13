@@ -14,6 +14,7 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mainProfileImageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var noNotesLabel: UILabel!
     
     var detailForUser: String!
     var imageForUser: String!
@@ -75,7 +76,7 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
                 mainProfileImageView.image = cachedImage
             } else {
                 let imageReference = FIRStorage.storage().referenceForURL(imageForUser)
-                FirebaseClient.sharedInstance.downloadImage(imageForUser, url: imageReference, completionHandler: { (result) in
+                FirebaseClient.sharedInstance.downloadImage(detailForUser, url: imageReference, completionHandler: { (result) in
                     if let image = result {
                         self.mainProfileImageView.image = image
                         self.tableView.reloadData()
@@ -85,6 +86,8 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         }
         
         FirebaseClient.Constants.Database.REF_USERS.child(detailForUser).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            self.notes = []
+            
             if let dataDict = snapshot.value as? Dictionary<String, AnyObject> {
                 if let displayName = dataDict["displayName"] as? String {
                     self.navigationItem.title = displayName
@@ -92,10 +95,16 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
                 if let notesDict = dataDict["notes"] as? Dictionary<String, AnyObject> {
                     let notes = Array(notesDict.keys)
                     self.loadNotes(notes)
+                    self.noNotesLabel.hidden = true
+                } else {
+                    self.noNotesLabel.hidden = false
+                    self.activityIndicator.hidden = true
+                    self.tableView.reloadData()
                 }
             } else {
-                self.showAlert("Unable To Download Data", msg: "Please try again.")
                 self.activityIndicator.hidden = true
+                self.noNotesLabel.hidden = false
+                self.showAlert("Unable To Download Data", msg: "Please try again.")
             }
         })
     }
@@ -122,11 +131,14 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         presentViewController(action, animated: true, completion: nil)
     }
     
-    func showDeleteAlert(note: FIRDatabaseReference) {
+    func showDeleteAlert(note: String) {
         let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
-            note.removeValue()
+            let notesInFeed = FirebaseClient.Constants.Database.REF_NOTES.child(note)
+            notesInFeed.removeValue()
+            let notesInProfile = FirebaseClient.sharedInstance.notesReference.child(note)
+            notesInProfile.removeValue()
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         

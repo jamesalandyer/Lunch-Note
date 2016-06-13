@@ -60,22 +60,22 @@ class NoteCell: UITableViewCell {
             }
         }
         
-        lunchBoxButton.image = UIImage(named: "lunchbox_add.png")
         lunchBoxButton.addGestureRecognizer(lunchBoxGesture)
         
         if user == currentNote.noteAuthor {
             lunchBoxButton.image = UIImage(named: "notetrash.png")
             profileButton.userInteractionEnabled = false
         } else {
+            lunchboxNote.observeSingleEventOfType(.Value, withBlock: { snapshot in
+                if snapshot.value as? NSNull == nil {
+                    self.lunchBoxButton.image = UIImage(named: "lunchbox_added.png")
+                } else {
+                    self.lunchBoxButton.image = UIImage(named: "lunchbox_add.png")
+                }
+            })
             profileButton.userInteractionEnabled = true
             profileButton.addGestureRecognizer(profileGesture)
         }
-        
-        lunchboxNote.observeSingleEventOfType(.Value, withBlock: { snapshot in
-            if snapshot.value as? NSNull == nil {
-                self.lunchBoxButton.image = UIImage(named: "lunchbox_added.png")
-            }
-        })
         
         noteLabel.text = "\"" + note.note + "\""
         dateLabel.text = note.noteDate
@@ -112,7 +112,7 @@ class NoteCell: UITableViewCell {
      */
     func deleteTapped(sender: UITapGestureRecognizer) {
         if let delegate = deleteDelegate {
-            delegate.showDeleteAlert(FirebaseClient.Constants.Database.REF_NOTES.child(currentNote.noteKey))
+            delegate.showDeleteAlert(currentNote.noteKey)
         }
     }
     

@@ -25,6 +25,10 @@ class FirebaseClient {
         return userReference.child("notes")
     }
     
+    var storageReference: FIRStorageReference {
+        return FIRStorage.storage().reference().child("profilepictures/\(FirebaseClient.sharedInstance.currentUser!)")
+    }
+    
     var currentUser: String? {
         let user = FIRAuth.auth()?.currentUser
         let uid = user?.uid

@@ -14,5 +14,5 @@ protocol NoteCellAuthorDelegate {
 }
 
 protocol NoteCellDeleteDelegate {
-    func showDeleteAlert(note: FIRDatabaseReference)
+    func showDeleteAlert(note: String)
 }

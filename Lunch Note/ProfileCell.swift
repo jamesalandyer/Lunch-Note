@@ -94,7 +94,7 @@ class ProfileCell: UITableViewCell {
      */
     func deleteTapped(sender: UITapGestureRecognizer) {
         if let delegate = deleteDelegate {
-            delegate.showDeleteAlert(FirebaseClient.Constants.Database.REF_NOTES.child(currentNote.noteKey))
+            delegate.showDeleteAlert(currentNote.noteKey)
         }
     }
 

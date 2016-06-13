@@ -15,7 +15,6 @@
 		2B584BAA1D08E98B009EB16B /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BA91D08E98B009EB16B /* Note.swift */; };
 		2B584BAC1D08EA59009EB16B /* NoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BAB1D08EA59009EB16B /* NoteCell.swift */; };
 		2B584BAE1D08EA75009EB16B /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BAD1D08EA75009EB16B /* ProfileCell.swift */; };
-		2B584BB01D08EA8C009EB16B /* LunchBoxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BAF1D08EA8C009EB16B /* LunchBoxCell.swift */; };
 		2B584BB21D08EB29009EB16B /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BB11D08EB29009EB16B /* CustomButton.swift */; };
 		2B584BB41D08EB6A009EB16B /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BB31D08EB6A009EB16B /* CustomTextView.swift */; };
 		2B584BB61D08EBA5009EB16B /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584BB51D08EBA5009EB16B /* CustomImageView.swift */; };
@@ -50,7 +49,6 @@
 		2B584BA91D08E98B009EB16B /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		2B584BAB1D08EA59009EB16B /* NoteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteCell.swift; sourceTree = "<group>"; };
 		2B584BAD1D08EA75009EB16B /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
-		2B584BAF1D08EA8C009EB16B /* LunchBoxCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LunchBoxCell.swift; sourceTree = "<group>"; };
 		2B584BB11D08EB29009EB16B /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		2B584BB31D08EB6A009EB16B /* CustomTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTextView.swift; sourceTree = "<group>"; };
 		2B584BB51D08EBA5009EB16B /* CustomImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
@@ -130,7 +128,6 @@
 			children = (
 				2B584BAB1D08EA59009EB16B /* NoteCell.swift */,
 				2B584BAD1D08EA75009EB16B /* ProfileCell.swift */,
-				2B584BAF1D08EA8C009EB16B /* LunchBoxCell.swift */,
 				2B584BB11D08EB29009EB16B /* CustomButton.swift */,
 				2B584BB31D08EB6A009EB16B /* CustomTextView.swift */,
 				2B584BB51D08EBA5009EB16B /* CustomImageView.swift */,
@@ -345,7 +342,6 @@
 				2B584BD31D0A14F7009EB16B /* FirebaseClient.swift in Sources */,
 				2B584BCA1D08EDEE009EB16B /* LunchBoxVC.swift in Sources */,
 				2B584BAA1D08E98B009EB16B /* Note.swift in Sources */,
-				2B584BB01D08EA8C009EB16B /* LunchBoxCell.swift in Sources */,
 				2B584BB61D08EBA5009EB16B /* CustomImageView.swift in Sources */,
 				2B584BBC1D08ECB4009EB16B /* NoteCellDelegate.swift in Sources */,
 				2B584BBA1D08EC19009EB16B /* Constants.swift in Sources */,

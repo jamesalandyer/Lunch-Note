@@ -29,28 +29,30 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         setView()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
-        FIRAuth.auth()?.addAuthStateDidChangeListener { auth, user in
-            if user != nil {
-                if FirebaseClient.sharedInstance.currentDisplayName != nil {
-                    self.loadNotes()
-                } else {
-                    self.performSegueWithIdentifier("showLogin", sender: nil)
-                }
-            } else {
-                self.performSegueWithIdentifier("showLogin", sender: nil)
-            }
+        if FIRAuth.auth()?.currentUser != nil && FirebaseClient.sharedInstance.currentDisplayName != nil {
+            loadNotes()
         }
     }
     
-    func setView() {
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if FIRAuth.auth()?.currentUser == nil || FirebaseClient.sharedInstance.currentDisplayName == nil {
+            performSegueWithIdentifier("showLogin", sender: nil)
+        }
+        
+        tableView.reloadData()
+    }
+    
+    private func setView() {
         setNavigation()
         setTabBar()
     }
     
-    func setNavigation() {
+    private func setNavigation() {
         //Set Center Image
         let logo = UIImage(named: "lunchbox_nav.png")
         let imageView = UIImageView(image: logo)
@@ -73,7 +75,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
-    func setTabBar() {
+    private func setTabBar() {
         //Set Title Colors
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor()], forState: .Selected)
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: lightGreyColor], forState: .Normal)
@@ -181,11 +183,14 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         }
     }
     
-    func showDeleteAlert(note: FIRDatabaseReference) {
+    func showDeleteAlert(note: String) {
         let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
-            note.removeValue()
+            let notesInFeed = FirebaseClient.Constants.Database.REF_NOTES.child(note)
+            notesInFeed.removeValue()
+            let notesInProfile = FirebaseClient.sharedInstance.notesReference.child(note)
+            notesInProfile.removeValue()
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         
