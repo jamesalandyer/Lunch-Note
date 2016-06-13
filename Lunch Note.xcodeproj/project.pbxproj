@@ -39,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		1146FF2D7924C6C0F124CB7B /* Pods-Lunch Note.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lunch Note.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lunch Note/Pods-Lunch Note.release.xcconfig"; sourceTree = "<group>"; };
+		2B4DEC571D0F77FB0087076E /* Lunch Note-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Lunch Note-Bridging-Header.h"; sourceTree = "<group>"; };
 		2B584B8C1D08E661009EB16B /* Lunch Note.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lunch Note.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B584B8F1D08E661009EB16B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2B584B911D08E661009EB16B /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
@@ -168,6 +169,7 @@
 				2B584BB91D08EC19009EB16B /* Constants.swift */,
 				2B584BBB1D08ECB4009EB16B /* NoteCellDelegate.swift */,
 				2B584B8F1D08E661009EB16B /* AppDelegate.swift */,
+				2B4DEC571D0F77FB0087076E /* Lunch Note-Bridging-Header.h */,
 				2B584B9B1D08E662009EB16B /* Info.plist */,
 				2B584BCF1D0922AB009EB16B /* GoogleService-Info.plist */,
 				2B584BCC1D08EE82009EB16B /* Roboto-Regular.ttf */,
@@ -464,11 +466,14 @@
 			baseConfigurationReference = 7669CE74180E62121E1ADFBA /* Pods-Lunch Note.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: James Dyer (HCHTMCMUC6)";
 				INFOPLIST_FILE = "Lunch Note/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jamesalandyer.Lunch-Note";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Lunch Note/Lunch Note-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -477,11 +482,13 @@
 			baseConfigurationReference = 1146FF2D7924C6C0F124CB7B /* Pods-Lunch Note.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Lunch Note/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jamesalandyer.Lunch-Note";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Lunch Note/Lunch Note-Bridging-Header.h";
 			};
 			name = Release;
 		};

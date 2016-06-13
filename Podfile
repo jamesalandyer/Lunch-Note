@@ -8,4 +8,5 @@ target 'Lunch Note' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
+  pod 'pop', '~> 1.0'
 end
