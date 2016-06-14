@@ -18,12 +18,23 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     @IBOutlet weak var displayNameTextField: UITextField!
     @IBOutlet weak var emailAddressTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var buttonStackView: UIStackView!
     @IBOutlet weak var saveButton: CustomButton!
     @IBOutlet weak var currentEmailAddressTextField: UITextField!
     @IBOutlet weak var currentPasswordTextField: UITextField!
     @IBOutlet weak var continueButton: CustomButton!
-    @IBOutlet weak var loginStackView: UIStackView!
+    @IBOutlet weak var cancelButton: CustomButton!
+    @IBOutlet weak var logoImageView: UIImageView!
+    @IBOutlet weak var deleteConstraint: NSLayoutConstraint!
+    @IBOutlet weak var profileImageConstraint: NSLayoutConstraint!
+    @IBOutlet weak var nameConstraint: NSLayoutConstraint!
+    @IBOutlet weak var newEmailConstraint: NSLayoutConstraint!
+    @IBOutlet weak var newPasswordConstraint: NSLayoutConstraint!
+    @IBOutlet weak var saveConstraint: NSLayoutConstraint!
+    @IBOutlet weak var cancelConstraint: NSLayoutConstraint!
+    @IBOutlet weak var logoConstraint: NSLayoutConstraint!
+    @IBOutlet weak var currentEmailConstraint: NSLayoutConstraint!
+    @IBOutlet weak var currentPasswordConstraint: NSLayoutConstraint!
+    @IBOutlet weak var continueConstraint: NSLayoutConstraint!
     
     //Properties
     private let imagePicker = UIImagePickerController()
@@ -37,6 +48,10 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     private var newPassword: String!
     private var loggedIn = false
     
+    private var animEngineEdit: AnimationEngine!
+    private var animEngineLogin: AnimationEngine!
+    private var animEngineCancel: AnimationEngine!
+    
     //MARK: - Stack
     
     override func viewDidLoad() {
@@ -49,6 +64,10 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         passwordTextField.delegate = self
         currentEmailAddressTextField.delegate = self
         currentPasswordTextField.delegate = self
+        
+        animEngineEdit = AnimationEngine(constraints: [deleteConstraint, profileImageConstraint, nameConstraint, newEmailConstraint, newPasswordConstraint, saveConstraint])
+        animEngineCancel = AnimationEngine(constraints: [cancelConstraint])
+        animEngineLogin = AnimationEngine(constraints: [logoConstraint, currentEmailConstraint, currentPasswordConstraint, continueConstraint])
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -60,6 +79,13 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         subscribeToKeyboardNotifications()
         getUserImage()
         getUserData()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        animEngineEdit.animateOnScreen()
+        animEngineCancel.animateOnScreen()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -135,6 +161,8 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     }
     
     @IBAction func continueButtonPressed(sender: AnyObject) {
+        setUI(false)
+        
         guard let email = currentEmailAddressTextField.text where email != "" && isValidEmail(email) else {
             showAlert("Invalid Email Address", msg: "Please enter a valid email address.", action: false)
             return
@@ -162,7 +190,6 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
             } else {
                 performUIUpdatesOnMain {
                     self.showUserLogin(false)
-                    self.setUI(false)
                     if user != nil {
                         self.loggedIn = true
                         
@@ -240,7 +267,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         
         emailAddressTextField.enabled = enable
         passwordTextField.enabled = enable
-        buttonStackView.userInteractionEnabled = enable
+        cancelButton.enabled = enable
         displayNameTextField.enabled = enable
         addPhotoButton.enabled = enable
         currentEmailAddressTextField.enabled = enable
@@ -252,14 +279,14 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         
         emailAddressTextField.alpha = alpha
         passwordTextField.alpha = alpha
-        buttonStackView.alpha = alpha
+        cancelButton.alpha = alpha
         displayNameTextField.alpha = alpha
-        addPhotoButton.alpha = alpha
         profileImageView.alpha = alpha
         currentEmailAddressTextField.alpha = alpha
         currentPasswordTextField.alpha = alpha
         continueButton.alpha = alpha
         deleteAccountButton.alpha = alpha
+        logoImageView.alpha = alpha
         
         loadingIndicator.center = view.center
         loadingIndicator.startAnimating()
@@ -273,15 +300,13 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
      - Parameter show: A Bool of whether to show the user login.
      */
     private func showUserLogin(show: Bool) {
-        deleteAccountButton.hidden = show
-        profileImageView.hidden = show
-        addPhotoButton.hidden = show
-        saveButton.hidden = show
-        displayNameTextField.hidden = show
-        emailAddressTextField.hidden = show
-        passwordTextField.hidden = show
-        
-        loginStackView.hidden = !show
+        if show {
+            animEngineEdit.animateOffScreen()
+            animEngineLogin.animateOnScreen()
+        } else {
+            animEngineEdit.animateBackOnScreen()
+            animEngineLogin.animateBackOffScreen()
+        }
     }
     
     /**
@@ -295,7 +320,9 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     private func showAlert(title: String, msg: String, action: Bool, account: Bool = false) {
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
         let dismissTitle = action || account ? "Cancel" : "Ok"
-        let dismiss = UIAlertAction(title: dismissTitle, style: .Default, handler: nil)
+        let dismiss = UIAlertAction(title: dismissTitle, style: .Default, handler: { (action) in
+            self.setUI(true)
+        })
         if action {
             let delete = UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) in
                 self.updateUserProfile(nil, displayName: nil)
@@ -492,6 +519,11 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         } else {
             showAlert("Unable To Upload", msg: "Your image size is too large.", action: false)
         }
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+        setUI(true)
     }
     
     //MARK: - TextField

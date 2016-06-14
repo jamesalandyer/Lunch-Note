@@ -7,6 +7,10 @@
 //
 
 import UIKit
+import AVFoundation
+
+//Sounds
+var sndSwoosh: AVAudioPlayer!
 
 //Custom Colors
 let lightGreyColor = UIColor(red: 195 / 255, green: 195 / 255, blue: 195 / 255, alpha: 1.0)

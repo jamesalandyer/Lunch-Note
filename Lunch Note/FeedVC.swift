@@ -9,8 +9,9 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import AVFoundation
 
-class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellAuthorDelegate, NoteCellDeleteDelegate {
+class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate, NoteCellAuthorDelegate, NoteCellDeleteDelegate {
     
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -21,6 +22,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
     var notesLoaded = false
     var authorDetail: String!
     var userImage: String!
+    var sndClick: AVAudioPlayer!
 
     //MARK: - Stack
     
@@ -29,6 +31,24 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        navigationController?.tabBarController?.delegate = self
+        
+        do {
+            
+            try sndClick = AVAudioPlayer(contentsOfURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("click", ofType: "wav")!))
+            
+            sndClick.volume = 0.5
+            sndClick.prepareToPlay()
+            
+            try sndSwoosh = AVAudioPlayer(contentsOfURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("swoosh", ofType: "wav")!))
+            
+            sndSwoosh.volume = 1.0
+            sndSwoosh.prepareToPlay()
+            
+        } catch {
+            print("Could Not Load Sound")
+        }
         
         setView()
     }
@@ -93,8 +113,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
      */
     private func setNavigation() {
         //Set Center Image
-        let logo = UIImage(named: "lunchbox_nav.png")
-        let imageView = UIImageView(image: logo)
+        let imageView = navAnimation()
         self.navigationItem.titleView = imageView
         //Set Back Navigation Button
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.Plain, target:nil, action:nil)
@@ -121,6 +140,23 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         //Set Title Colors
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor()], forState: .Selected)
         navigationController?.tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: lightGreyColor], forState: .Normal)
+    }
+    
+    //MARK: - TabBar
+    
+    /**
+     Plays the sound. If the sound is already playing it stops it and plays it again.
+     */
+    private func playSound() {
+        if sndClick.playing {
+            sndClick.stop()
+        }
+        
+        sndClick.play()
+    }
+    
+    func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
+        playSound()
     }
     
     //MARK: - TableView

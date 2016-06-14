@@ -18,17 +18,33 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak private var submitButton: CustomButton!
     @IBOutlet weak private var forgotButton: CustomButton!
     @IBOutlet weak private var logoImageView: UIImageView!
-    @IBOutlet weak private var loginStackView: UIStackView!
-    @IBOutlet weak private var onBoardStackView: UIStackView!
-    @IBOutlet weak private var displayNameStackView: UIStackView!
+    @IBOutlet weak var welcomeLabel: UILabel!
+    @IBOutlet weak var introLabel: UILabel!
+    @IBOutlet weak var addLunchboxLabel: UILabel!
+    @IBOutlet weak var addLunchboxImageView: UIImageView!
     @IBOutlet weak private var nameTextField: UITextField!
     @IBOutlet weak private var nameButton: CustomButton!
+    @IBOutlet weak var loginButton: CustomButton!
+    @IBOutlet weak var logoConstraint: NSLayoutConstraint!
+    @IBOutlet weak var emailConstraint: NSLayoutConstraint!
+    @IBOutlet weak var passwordConstraint: NSLayoutConstraint!
+    @IBOutlet weak var loginConstraint: NSLayoutConstraint!
+    @IBOutlet weak var forgotConstraint: NSLayoutConstraint!
+    @IBOutlet weak var welcomeConstraint: NSLayoutConstraint!
+    @IBOutlet weak var introConstraint: NSLayoutConstraint!
+    @IBOutlet weak var addLunchboxLabelConstraint: NSLayoutConstraint!
+    @IBOutlet weak var addLunchboxImageConstraint: NSLayoutConstraint!
+    @IBOutlet weak var nameConstraint: NSLayoutConstraint!
+    @IBOutlet weak var nameButtonConstraint: NSLayoutConstraint!
     
     //Properties
     private let loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     private var userEmail: String!
     private var userPassword: String!
+    private var animEngineLogin: AnimationEngine!
+    private var animEngineOnboard: AnimationEngine!
+    private var animEngineLogo: AnimationEngine!
     
     //MARK: - Stack
     
@@ -45,12 +61,26 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         
         subscribeToKeyboardNotifications()
         
+        animEngineLogo = AnimationEngine(constraints: [logoConstraint])
+        animEngineLogin = AnimationEngine(constraints: [emailConstraint, passwordConstraint, loginConstraint, forgotConstraint])
+        animEngineOnboard = AnimationEngine(constraints: [welcomeConstraint, introConstraint, addLunchboxLabelConstraint, addLunchboxImageConstraint, nameConstraint, nameButtonConstraint])
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
         //If the user is logged in but doesn't have a display name, show onboard
         if FirebaseClient.sharedInstance.currentUser != nil {
             if FirebaseClient.sharedInstance.currentDisplayName == nil {
                 showOnBoardScreen(true)
+            } else {
+                dismissViewControllerAnimated(true, completion: nil)
             }
+        } else {
+            animEngineLogin.animateOnScreen()
         }
+        
+        animEngineLogo.animateOnScreen()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -103,7 +133,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
                         if userInfo.displayName != nil {
                             self.dismissViewControllerAnimated(true, completion: nil)
                         } else {
-                            self.showOnBoardScreen(true)
+                            self.showOnBoardScreen(false)
                             self.setUI(true)
                         }
                     } else {
@@ -190,6 +220,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         
         emailTextField.enabled = enable
         passwordTextField.enabled = enable
+        loginButton.enabled = enable
         submitButton.enabled = enable
         forgotButton.enabled = enable
         nameTextField.enabled = enable
@@ -199,11 +230,16 @@ class LoginVC: UIViewController, UITextFieldDelegate {
         
         emailTextField.alpha = alpha
         passwordTextField.alpha = alpha
+        loginButton.alpha = alpha
         submitButton.alpha = alpha
         forgotButton.alpha = alpha
         logoImageView.alpha = alpha
-        onBoardStackView.alpha = alpha
-        displayNameStackView.alpha = alpha
+        welcomeLabel.alpha = alpha
+        introLabel.alpha = alpha
+        addLunchboxLabel.alpha = alpha
+        addLunchboxImageView.alpha = alpha
+        nameTextField.alpha = alpha
+        nameButton.alpha = alpha
         
         loadingIndicator.frame = CGRectMake(0, 0, 40, 40)
         loadingIndicator.center = view.center
@@ -215,14 +251,14 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     /**
      Sets whether to show the onboard screen.
      
-     - Parameter show: A Bool of whether to switch to onboard screen.
+     - Parameter only: A Bool of whether to only show the onboard screen.
      */
-    private func showOnBoardScreen(show: Bool) {
-        loginStackView.hidden = show
-        forgotButton.hidden = show
+    private func showOnBoardScreen(only: Bool) {
+        if !only {
+            animEngineLogin.animateOffScreen()
+        }
         
-        onBoardStackView.hidden = !show
-        displayNameStackView.hidden = !show
+        animEngineOnboard.animateOnScreen()
     }
     
     /**
@@ -264,7 +300,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
                     self.showErrorAlert("Couldn't Create User", msg: "Please make sure your password is 6 or more characters and try again.", createUser: false)
                 } else {
                     if user != nil {
-                        self.showOnBoardScreen(true)
+                        self.showOnBoardScreen(false)
                         self.setUI(true)
                     } else {
                         self.showErrorAlert("Unable To Retrieve Data", msg: "Please try again.", createUser: false)
@@ -330,6 +366,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     func keyboardWillShow(notification: NSNotification) {
         if nameTextField.editing {
             logoImageView.hidden = true
+            welcomeLabel.hidden = true
             view.frame.origin.y = getKeyboardHeight(notification) * -1
         }
     }
@@ -342,6 +379,7 @@ class LoginVC: UIViewController, UITextFieldDelegate {
     func keyboardWillHide(notification: NSNotification) {
         if nameTextField.editing {
             logoImageView.hidden = false
+            welcomeLabel.hidden = false
             view.frame.origin.y = 0
         }
     }

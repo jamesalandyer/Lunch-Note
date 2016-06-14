@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B4DEC5B1D0F9ECD0087076E /* AnimationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4DEC5A1D0F9ECD0087076E /* AnimationEngine.swift */; };
+		2B4DEC5D1D1066280087076E /* CustomAnimatingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4DEC5C1D1066280087076E /* CustomAnimatingImageView.swift */; };
+		2B4DEC5F1D106C100087076E /* CustomNavigationAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4DEC5E1D106C100087076E /* CustomNavigationAnimation.swift */; };
+		2B4DEC611D106E560087076E /* click.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2B4DEC601D106E560087076E /* click.wav */; };
+		2B4DEC651D1076350087076E /* swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2B4DEC641D1076350087076E /* swoosh.wav */; };
 		2B584B901D08E661009EB16B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584B8F1D08E661009EB16B /* AppDelegate.swift */; };
 		2B584B921D08E661009EB16B /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B584B911D08E661009EB16B /* FeedVC.swift */; };
 		2B584B951D08E662009EB16B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B584B931D08E662009EB16B /* Main.storyboard */; };
@@ -40,6 +45,11 @@
 /* Begin PBXFileReference section */
 		1146FF2D7924C6C0F124CB7B /* Pods-Lunch Note.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lunch Note.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lunch Note/Pods-Lunch Note.release.xcconfig"; sourceTree = "<group>"; };
 		2B4DEC571D0F77FB0087076E /* Lunch Note-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Lunch Note-Bridging-Header.h"; sourceTree = "<group>"; };
+		2B4DEC5A1D0F9ECD0087076E /* AnimationEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationEngine.swift; sourceTree = "<group>"; };
+		2B4DEC5C1D1066280087076E /* CustomAnimatingImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAnimatingImageView.swift; sourceTree = "<group>"; };
+		2B4DEC5E1D106C100087076E /* CustomNavigationAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationAnimation.swift; sourceTree = "<group>"; };
+		2B4DEC601D106E560087076E /* click.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = click.wav; sourceTree = "<group>"; };
+		2B4DEC641D1076350087076E /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = swoosh.wav; sourceTree = "<group>"; };
 		2B584B8C1D08E661009EB16B /* Lunch Note.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lunch Note.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B584B8F1D08E661009EB16B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2B584B911D08E661009EB16B /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
@@ -132,9 +142,12 @@
 				2B584BB11D08EB29009EB16B /* CustomButton.swift */,
 				2B584BB31D08EB6A009EB16B /* CustomTextView.swift */,
 				2B584BB51D08EBA5009EB16B /* CustomImageView.swift */,
+				2B4DEC5C1D1066280087076E /* CustomAnimatingImageView.swift */,
 				2B584BB71D08EBDF009EB16B /* CustomView.swift */,
 				2BC1BB901D0CAE9100A60F3B /* CustomCircleView.swift */,
 				2BC1BB921D0CBCAF00A60F3B /* CustomRoundedView.swift */,
+				2B4DEC5A1D0F9ECD0087076E /* AnimationEngine.swift */,
+				2B4DEC5E1D106C100087076E /* CustomNavigationAnimation.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -174,6 +187,8 @@
 				2B584BCF1D0922AB009EB16B /* GoogleService-Info.plist */,
 				2B584BCC1D08EE82009EB16B /* Roboto-Regular.ttf */,
 				2B584BCB1D08EE82009EB16B /* Roboto-Bold.ttf */,
+				2B4DEC601D106E560087076E /* click.wav */,
+				2B4DEC641D1076350087076E /* swoosh.wav */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -268,10 +283,12 @@
 			files = (
 				2B584B9A1D08E662009EB16B /* LaunchScreen.storyboard in Resources */,
 				2B584B971D08E662009EB16B /* Assets.xcassets in Resources */,
+				2B4DEC611D106E560087076E /* click.wav in Resources */,
 				2B584BCE1D08EE82009EB16B /* Roboto-Regular.ttf in Resources */,
 				2B584BCD1D08EE82009EB16B /* Roboto-Bold.ttf in Resources */,
 				2B584B951D08E662009EB16B /* Main.storyboard in Resources */,
 				2B584BD01D0922AB009EB16B /* GoogleService-Info.plist in Resources */,
+				2B4DEC651D1076350087076E /* swoosh.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +357,10 @@
 				2B584BB21D08EB29009EB16B /* CustomButton.swift in Sources */,
 				2B584BC61D08EDB7009EB16B /* UserVC.swift in Sources */,
 				2B584BB81D08EBDF009EB16B /* CustomView.swift in Sources */,
+				2B4DEC5B1D0F9ECD0087076E /* AnimationEngine.swift in Sources */,
+				2B4DEC5D1D1066280087076E /* CustomAnimatingImageView.swift in Sources */,
 				2B584B901D08E661009EB16B /* AppDelegate.swift in Sources */,
+				2B4DEC5F1D106C100087076E /* CustomNavigationAnimation.swift in Sources */,
 				2B584BD31D0A14F7009EB16B /* FirebaseClient.swift in Sources */,
 				2B584BCA1D08EDEE009EB16B /* LunchBoxVC.swift in Sources */,
 				2B584BAA1D08E98B009EB16B /* Note.swift in Sources */,
