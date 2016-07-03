@@ -20,6 +20,7 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
     var lunchbox: [String]?
     var notes = [Note]()
     var authorDetail: String!
+    var userImage: String!
     
     //MARK: - Stack
     
@@ -164,6 +165,7 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
      */
     func showAuthorDetail(author: String, image: String) {
         authorDetail = author
+        userImage = image
         performSegueWithIdentifier("showLunchboxDetail", sender: nil)
     }
     
@@ -171,6 +173,7 @@ class LunchBoxVC: UIViewController, UITableViewDelegate, UITableViewDataSource, 
         if segue.identifier == "showLunchboxDetail" {
             if let controller = segue.destinationViewController as? DetailVC {
                 controller.detailForUser = authorDetail
+                controller.imageForUser = userImage
             }
         }
     }

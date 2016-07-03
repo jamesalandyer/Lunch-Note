@@ -47,6 +47,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     private var newEmailAddress: String!
     private var newPassword: String!
     private var loggedIn = false
+    private var imagePickerUsed = false
     
     private var animEngineEdit: AnimationEngine!
     private var animEngineLogin: AnimationEngine!
@@ -84,8 +85,10 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        animEngineEdit.animateOnScreen()
-        animEngineCancel.animateOnScreen()
+        if !imagePickerUsed {
+            animEngineEdit.animateOnScreen()
+            animEngineCancel.animateOnScreen()
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -362,7 +365,15 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
         if !action && !account {
             setUI(true)
         }
+        
+        let subview = alert.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(alert, animated: true, completion: nil)
+        
+        alert.view.tintColor = UIColor.blackColor()
     }
     
     //MARK: - Retrieve Data
@@ -468,7 +479,9 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
                 } else {
                     //If the profile photo url was actually changed
                     if changeURL {
-                        self.updateUserPosts(url)
+                        if self.currentUserNotes != nil {
+                            self.updateUserPosts(url)
+                        }
                         self.getUserImage()
                     }
                     //If there is nothing else to do
@@ -494,6 +507,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     //MARK: - ImagePicker
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        imagePickerUsed = true
         dismissViewControllerAnimated(true, completion: nil)
         //Get the image and compress it into a JPEG
         let imageData: NSData = UIImageJPEGRepresentation(image, 0.2)!
@@ -522,6 +536,7 @@ class EditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCon
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        imagePickerUsed = true
         dismissViewControllerAnimated(true, completion: nil)
         setUI(true)
     }

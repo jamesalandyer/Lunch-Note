@@ -220,7 +220,15 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
         
         action.addAction(ok)
+        
+        let subview = action.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(action, animated: true, completion: nil)
+        
+        action.view.tintColor = UIColor.blackColor()
     }
     
     /**
@@ -244,7 +252,15 @@ class UserVC: UIViewController, UITableViewDelegate, UITableViewDataSource, Note
         deleteController.addAction(deleteAction)
         deleteController.addAction(cancelAction)
         
+        let subview = deleteController.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
+        
         presentViewController(deleteController, animated: true, completion: nil)
+        
+        deleteController.view.tintColor = UIColor.blackColor()
     }
 
 }

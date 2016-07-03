@@ -51,6 +51,8 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITa
         }
         
         setView()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(loadNotes), name: "Block", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -58,7 +60,7 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITa
         
         //If the user is logged in, load notes
         if FIRAuth.auth()?.currentUser != nil && FirebaseClient.sharedInstance.currentDisplayName != nil {
-            loadNotes()
+            loadNotes(nil)
         }
     }
     
@@ -95,7 +97,14 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITa
         action.addAction(cancel)
         action.addAction(logout)
         
+        let subview = action.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(action, animated: true, completion: nil)
+        
+        action.view.tintColor = UIColor.blackColor()
     }
     
     //MARK: - Adjusting UI
@@ -195,31 +204,82 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITa
         }
     }
     
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let note = notes[indexPath.row]
+        
+        let report = UITableViewRowAction(style: .Normal, title: "Report") { action, index in
+            FirebaseClient.Constants.Database.REF_REPORTS.child(note.noteKey).setValue(true)
+        }
+        report.backgroundColor = lightRedColor
+        
+        return [report]
+    }
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        let note = notes[indexPath.row]
+        let currentUser = FirebaseClient.sharedInstance.currentUser
+        
+        if note.noteAuthor != currentUser {
+            return true
+        }
+        
+        return false
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+    }
+    
     //MARK: - Retrieve Data
     
     /**
      Gets all of the notes for the feed.
      */
-    private func loadNotes() {
+    func loadNotes(notif: NSNotification?) {
+        if notif?.object != nil {
+            notesLoaded = false
+        }
+        
         if !notesLoaded {
             activityIndicator.hidden = false
             activityIndicator.startAnimating()
             
             FirebaseClient.Constants.Database.REF_NOTES.observeEventType(.Value, withBlock: { snapshot in
-                self.notes = []
-                
-                if let notes = snapshot.children.allObjects as? [FIRDataSnapshot] {
-                    for note in notes {
-                        if let noteDict = note.value as? Dictionary<String, AnyObject> {
-                            let key = note.key
-                            let note = Note(noteKey: key, dictionary: noteDict)
-                            self.notes.insert(note, atIndex: 0)
+                FirebaseClient.sharedInstance.userReference.child("blocked").observeSingleEventOfType(.Value, withBlock: { snapshotBlock in
+                    self.notes = []
+                    var blocked = [String]()
+                    
+                    if let blockedUsers = snapshotBlock.children.allObjects as? [FIRDataSnapshot] {
+                        for blockedUser in blockedUsers {
+                            blocked.append(blockedUser.key)
                         }
-                        self.tableView.reloadData()
                     }
-                }
-                self.activityIndicator.hidden = true
-                self.notesLoaded = true
+                    
+                    if let notes = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                        for note in notes {
+                            if let noteDict = note.value as? Dictionary<String, AnyObject> {
+                                let key = note.key
+                                let note = Note(noteKey: key, dictionary: noteDict)
+                                if blocked.count > 0 {
+                                    for block in blocked {
+                                        if block != note.noteAuthor {
+                                            self.notes.insert(note, atIndex: 0)
+                                        }
+                                    }
+                                } else {
+                                    self.notes.insert(note, atIndex: 0)
+                                }
+                            }
+                            self.tableView.reloadData()
+                        }
+                    }
+                    
+                    self.notesLoaded = true
+                    
+                    performUIUpdatesOnMain {
+                        self.activityIndicator.hidden = true
+                    }
+                })
             })
         }
     }
@@ -253,7 +313,15 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITa
         let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
         
         action.addAction(ok)
+        
+        let subview = action.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(action, animated: true, completion: nil)
+        
+        action.view.tintColor = UIColor.blackColor()
     }
     
     /**
@@ -276,7 +344,14 @@ class FeedVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITa
         deleteController.addAction(deleteAction)
         deleteController.addAction(cancelAction)
         
+        let subview = deleteController.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(deleteController, animated: true, completion: nil)
+        
+        deleteController.view.tintColor = UIColor.blackColor()
     }
     
     //MARK: - Segue

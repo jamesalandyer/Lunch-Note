@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NoteCellDeleteDelegate {
+class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     //Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -34,7 +34,17 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        setNavigation()
         getUserData()
+    }
+    
+    //MARK: - Adjusting UI
+    
+    private func setNavigation() {
+        //Sets Block Button In Navigation
+        let rightBarButton = UIBarButtonItem(title: "Block", style: .Done, target: self, action: #selector(showBlockAlert))
+        rightBarButton.tintColor = lightRedColor
+        navigationItem.rightBarButtonItem = rightBarButton
     }
     
     //MARK: - TableView
@@ -56,8 +66,6 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         let note = notes[indexPath.row]
         
         if let cell = tableView.dequeueReusableCellWithIdentifier("ProfileCell") as? ProfileCell {
-            
-            cell.deleteDelegate = self
             
             cell.configureCell(note)
             
@@ -149,30 +157,57 @@ class DetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, No
         let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
         
         action.addAction(ok)
+        
+        let subview = action.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(action, animated: true, completion: nil)
+        
+        action.view.tintColor = UIColor.blackColor()
     }
     
     /**
-     Shows an delete alert to the user.
-     
-     - Parameter note: The key to the note the user wants to delete.
+     Shows a block alert to the user.
      */
-    func showDeleteAlert(note: String) {
-        let deleteController = UIAlertController(title: "Delete This Post?", message: "Are you sure you want to delete this post? This action cannot be undone.", preferredStyle: .Alert)
+    func showBlockAlert() {
+        let deleteController = UIAlertController(title: "Block This User?", message: "Are you sure you want to block this user? This action cannot be undone.", preferredStyle: .Alert)
         
-        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+        let deleteAction = UIAlertAction(title: "Block", style: .Destructive, handler: { action in
             //Delete note from the feed and user profile
-            let notesInFeed = FirebaseClient.Constants.Database.REF_NOTES.child(note)
-            notesInFeed.removeValue()
-            let notesInProfile = FirebaseClient.sharedInstance.notesReference.child(note)
-            notesInProfile.removeValue()
+            FirebaseClient.sharedInstance.blockUserReference.child(self.detailForUser).setValue(true)
+            
+            FirebaseClient.sharedInstance.lunchBoxReference.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if let lunchNotes = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                    for lunchNote in lunchNotes {
+                        for note in self.notes {
+                            if lunchNote.key == note.noteKey {
+                                FirebaseClient.sharedInstance.lunchBoxReference.child(lunchNote.key).removeValue()
+                            }
+                        }
+                    }
+                    
+                    performUIUpdatesOnMain {
+                        NSNotificationCenter.defaultCenter().postNotificationName("Block", object: true)
+                        self.navigationController?.popViewControllerAnimated(true)
+                    }
+                }
+            })
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         
         deleteController.addAction(deleteAction)
         deleteController.addAction(cancelAction)
         
+        let subview = deleteController.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(deleteController, animated: true, completion: nil)
+        
+        deleteController.view.tintColor = UIColor.blackColor()
     }
 
 }

@@ -311,7 +311,7 @@
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexTrackingBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NoteCell" rowHeight="190" id="YJA-Wo-8GM" customClass="NoteCell" customModule="Lunch_Note" customModuleProvider="target">
+                                    <tableViewCell opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="NoteCell" rowHeight="190" id="YJA-Wo-8GM" customClass="NoteCell" customModule="Lunch_Note" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="600" height="190"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YJA-Wo-8GM" id="cA3-NM-23X">
@@ -653,15 +653,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5ks-sk-Lp8" customClass="CustomRoundedView" customModule="Lunch_Note" customModuleProvider="target">
-                                                    <rect key="frame" x="8" y="18" width="584" height="163.5"/>
+                                                    <rect key="frame" x="8" y="18" width="584" height="164"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="“You will do great things! Just keep working at what makes you happy!”" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="vEa-YX-x1Q">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="“You will do great things! Just keep working at what makes you happy!”" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="vEa-YX-x1Q">
                                                             <rect key="frame" x="8" y="8" width="568" height="99"/>
                                                             <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="20"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="29c-8S-dXj">
+                                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="29c-8S-dXj">
                                                             <rect key="frame" x="8" y="115" width="568" height="40"/>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lunchbox_add" translatesAutoresizingMaskIntoConstraints="NO" id="0E5-5t-1At">
@@ -672,7 +672,7 @@
                                                                     </constraints>
                                                                 </imageView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEPTEMBER 31, 2016" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wZn-WM-Ekn">
-                                                                    <rect key="frame" x="205.5" y="9.5" width="139" height="21"/>
+                                                                    <rect key="frame" x="206" y="10" width="139" height="21"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="139" id="RxK-hy-jid"/>
                                                                         <constraint firstAttribute="height" constant="21" id="qVL-eU-PpS"/>
@@ -685,7 +685,7 @@
                                                                     <rect key="frame" x="503" y="0.0" width="65" height="40"/>
                                                                     <subviews>
                                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HJT-IQ-xKt">
-                                                                            <rect key="frame" x="0.0" y="17.5" width="17" height="5"/>
+                                                                            <rect key="frame" x="0.0" y="18" width="17" height="5"/>
                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="17" id="50M-Ny-sWt"/>
@@ -769,11 +769,11 @@
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R4T-Un-DyY">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="150"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gin-xx-V60" customClass="CustomCircleView" customModule="Lunch_Note" customModuleProvider="target">
-                                        <rect key="frame" x="200" y="-25.5" width="200" height="200"/>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gin-xx-V60" customClass="CustomCircleView" customModule="Lunch_Note" customModuleProvider="target">
+                                        <rect key="frame" x="200" y="-26" width="200" height="201"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="defaultpicture_large" translatesAutoresizingMaskIntoConstraints="NO" id="CSB-aP-L8a" customClass="CustomImageView" customModule="Lunch_Note" customModuleProvider="target">
-                                                <rect key="frame" x="50" y="50.5" width="100" height="100"/>
+                                                <rect key="frame" x="50" y="51" width="100" height="100"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="100" id="jUE-TF-bv9"/>
                                                     <constraint firstAttribute="height" constant="100" id="yto-io-wmI"/>
@@ -1000,7 +1000,7 @@
                                 <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="23"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="CURRENT EMAIL ADDRESS" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="Vmt-MK-EKe">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="CURRENT EMAIL ADDRESS" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="Vmt-MK-EKe">
                                 <rect key="frame" x="150" y="224" width="300" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="06b-mN-fMg"/>
@@ -1011,7 +1011,7 @@
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="CURRENT PASSWORD" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="gAb-Va-w0j">
-                                <rect key="frame" x="150" y="277.5" width="300" height="45"/>
+                                <rect key="frame" x="150" y="278" width="300" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="E8Q-HV-lCy"/>
                                     <constraint firstAttribute="width" constant="300" id="Pgm-2y-Jhr"/>
@@ -1020,7 +1020,7 @@
                                 <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="21"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOI-CI-Ep8" customClass="CustomButton" customModule="Lunch_Note" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOI-CI-Ep8" customClass="CustomButton" customModule="Lunch_Note" customModuleProvider="target">
                                 <rect key="frame" x="214" y="330" width="171" height="48"/>
                                 <color key="backgroundColor" red="0.50980392159999999" green="1" blue="0.57647058819999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -1036,7 +1036,7 @@
                                     <action selector="inspireButtonPressed:" destination="jT2-dt-Fx5" eventType="touchUpInside" id="hzE-Df-ZCP"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lunchbox_load_login" translatesAutoresizingMaskIntoConstraints="NO" id="ZOS-Qe-EeZ" customClass="CustomAnimatingImageView" customModule="Lunch_Note" customModuleProvider="target">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="lunchbox_load_login" translatesAutoresizingMaskIntoConstraints="NO" id="ZOS-Qe-EeZ" customClass="CustomAnimatingImageView" customModule="Lunch_Note" customModuleProvider="target">
                                 <rect key="frame" x="241" y="104" width="117" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="VLd-bs-tOA"/>
@@ -1153,15 +1153,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A9E-HK-tuF" customClass="CustomView" customModule="Lunch_Note" customModuleProvider="target">
-                                                    <rect key="frame" x="8" y="8" width="584" height="155.5"/>
+                                                    <rect key="frame" x="8" y="8" width="584" height="156"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="“You will do great things! Just keep working at what makes you happy!”" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="isp-lO-sHg">
-                                                            <rect key="frame" x="8" y="8" width="568" height="91.5"/>
+                                                            <rect key="frame" x="8" y="8" width="568" height="92"/>
                                                             <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="20"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="kHN-Nt-vau">
+                                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="kHN-Nt-vau">
                                                             <rect key="frame" x="8" y="107" width="568" height="40"/>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CIe-O9-86O">
@@ -1172,7 +1172,7 @@
                                                                     </constraints>
                                                                 </imageView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEPTEMBER 31, 2016" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y0h-Cy-q7U">
-                                                                    <rect key="frame" x="205" y="9" width="139" height="21"/>
+                                                                    <rect key="frame" x="206" y="10" width="139" height="21"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="21" id="3vN-MO-4or"/>
                                                                         <constraint firstAttribute="width" constant="139" id="pIW-0R-jT4"/>
@@ -1185,7 +1185,7 @@
                                                                     <rect key="frame" x="503" y="0.0" width="65" height="40"/>
                                                                     <subviews>
                                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0pt-18-Om9">
-                                                                            <rect key="frame" x="0.0" y="17" width="17" height="5"/>
+                                                                            <rect key="frame" x="0.0" y="18" width="17" height="5"/>
                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="17" id="Oic-pk-era"/>
@@ -1249,7 +1249,7 @@
                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="nyN-k5-AeB">
                                 <rect key="frame" x="20" y="60" width="560" height="106"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NO NOTES ADDED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FwW-sG-kMu">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="NO NOTES ADDED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FwW-sG-kMu">
                                         <rect key="frame" x="165" y="0.0" width="230" height="33"/>
                                         <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="28"/>
                                         <color key="textColor" red="0.25098039220000001" green="0.25098039220000001" blue="0.25098039220000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -1391,15 +1391,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yWh-fO-rrA" customClass="CustomRoundedView" customModule="Lunch_Note" customModuleProvider="target">
-                                                    <rect key="frame" x="8" y="18" width="584" height="163.5"/>
+                                                    <rect key="frame" x="8" y="18" width="584" height="164"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="“You will do great things! Just keep working at what makes you happy!”" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="vin-rb-m3K">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="“You will do great things! Just keep working at what makes you happy!”" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="vin-rb-m3K">
                                                             <rect key="frame" x="8" y="8" width="568" height="99"/>
                                                             <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="20"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="JtR-8V-EIw">
+                                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="JtR-8V-EIw">
                                                             <rect key="frame" x="8" y="115" width="568" height="40"/>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lunchbox_add" translatesAutoresizingMaskIntoConstraints="NO" id="uqA-xZ-HcM">
@@ -1410,7 +1410,7 @@
                                                                     </constraints>
                                                                 </imageView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEPTEMBER 31, 2016" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IAs-xv-Jbp">
-                                                                    <rect key="frame" x="205" y="9" width="139" height="21"/>
+                                                                    <rect key="frame" x="206" y="10" width="139" height="21"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="21" id="hu5-T2-Q7u"/>
                                                                         <constraint firstAttribute="width" constant="139" id="iNh-ow-4jv"/>
@@ -1423,7 +1423,7 @@
                                                                     <rect key="frame" x="503" y="0.0" width="65" height="40"/>
                                                                     <subviews>
                                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VFn-h4-SRK">
-                                                                            <rect key="frame" x="0.0" y="17" width="17" height="5"/>
+                                                                            <rect key="frame" x="0.0" y="18" width="17" height="5"/>
                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="17" id="3OV-Aq-SG0"/>
@@ -1610,7 +1610,7 @@
         <image name="user_unselected" width="32" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="2Dr-1B-Oug"/>
-        <segue reference="84i-OG-vnV"/>
+        <segue reference="p0f-F1-ShN"/>
+        <segue reference="538-7z-SXm"/>
     </inferredMetricsTieBreakers>
 </document>

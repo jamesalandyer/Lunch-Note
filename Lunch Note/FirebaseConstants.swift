@@ -17,6 +17,7 @@ extension FirebaseClient {
             static let REF = FIRDatabase.database().reference()
             static let REF_NOTES = REF.child("notes")
             static let REF_USERS = REF.child("users")
+            static let REF_REPORTS = REF.child("reports")
         }
         
         struct LocalImages {

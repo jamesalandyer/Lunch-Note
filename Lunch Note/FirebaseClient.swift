@@ -22,6 +22,9 @@ class FirebaseClient {
     var lunchBoxReference: FIRDatabaseReference {
         return userReference.child("lunchbox")
     }
+    var blockUserReference: FIRDatabaseReference {
+        return userReference.child("blocked")
+    }
     var notesReference: FIRDatabaseReference {
         return userReference.child("notes")
     }

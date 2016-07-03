@@ -283,7 +283,14 @@ class LoginVC: UIViewController, UITextFieldDelegate {
             alert.addAction(action)
         }
         
+        let subview = alert.view.subviews.first! as UIView
+        let alertContentView = subview.subviews.first! as UIView
+        alertContentView.backgroundColor = UIColor.whiteColor()
+        alertContentView.layer.cornerRadius = 13
+        
         presentViewController(alert, animated: true, completion: nil)
+        
+        alert.view.tintColor = UIColor.blackColor()
         
         setUI(true)
     }
